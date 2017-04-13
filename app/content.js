@@ -6,7 +6,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 
   if (request.message === "stop") {
-    window.NCC.imageChecker._collectionToArray(document.querySelectorAll('.overlay')).map(o => o.remove());
+    window.NCC.imageChecker._collectionToArray(document.querySelectorAll('.ncc-image-checker-overlay')).map(o => o.remove());
   }
 
   if (request.message === "info") {

@@ -20,6 +20,7 @@
         let url = document.createElement('a');
         url.innerHTML = processUrl(image);
         url.setAttribute('href', image.url);
+        url.setAttribute('target', '_blank');
         url.classList.add(URL);
         div.appendChild(url);
 
@@ -27,9 +28,17 @@
         renderedP.innerHTML = `Display: ${ image.width } x ${ image.height }`;
         div.appendChild(renderedP);
 
-        let naturalP = document.createElement('p');
-        naturalP.innerHTML = `Natural: ${ image.naturalWidth } x ${ image.naturalHeight }`;
-        div.appendChild(naturalP);
+        if (image.naturalWidth) {
+          let naturalP = document.createElement('p');
+          naturalP.innerHTML = `Natural: ${ image.naturalWidth } x ${ image.naturalHeight }`;
+          div.appendChild(naturalP);
+
+          let optimalP = document.createElement('p');
+          let naturalArea = image.naturalWidth * image.naturalHeight;
+          let renderArea = image.width * image.height * window.devicePixelRatio;
+          optimalP.innerHTML = `Image coverage: ${ (naturalArea / renderArea * 100).toFixed(2) }%`;
+          div.appendChild(optimalP);
+        }
 
         let sizeP = document.createElement('p');
         sizeP.innerHTML = `File Size: ${ image.size } KB`;
