@@ -35,7 +35,7 @@
         sizeP.innerHTML = `File Size: ${ image.size } KB`;
         div.appendChild(sizeP);
       } else {
-        console.log(image);
+        // some files listed here must be excluded
         div.classList.add(COMPACT);
       }
 
