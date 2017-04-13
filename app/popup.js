@@ -5,6 +5,7 @@ window.addEventListener('DOMContentLoaded', function() {
       url: 'mailto:drew@aaa.com'
     });
   });
+});
 
   document.getElementById('start').addEventListener('click', start, false);
   document.getElementById('stop').addEventListener('click', stop, false);
