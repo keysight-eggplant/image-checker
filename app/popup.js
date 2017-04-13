@@ -1,47 +1,52 @@
-/*global chrome*/
-window.addEventListener('DOMContentLoaded', function() {
-  document.getElementById('mail').addEventListener('click', function() {
-    chrome.tabs.update({
-      url: 'mailto:webperfinfo@nccgroup.trust'
+(function() {
+  chrome.runtime.onMessage.addListener(function(request) {
+    if (request.message === 'loaded') {
+      getStartButton().style.display = 'inline-block';
+      getStopButton().style.display = 'none';
+    }
+  });
+
+  getStartButton().style.display = 'none';
+  getStopButton().style.display = 'none';
+
+  getStartButton().addEventListener('click', start, false);
+  getStopButton().addEventListener('click', stop, false);
+
+  sendMessageToActiveTab({message: 'info'}, function(response) {
+    if (response.message === 'inactive') {
+      getStartButton().style.display = 'inline-block';
+      getStopButton().style.display = 'none';
+    }
+
+    if (response.message === 'active') {
+      getStartButton().style.display = 'none';
+      getStopButton().style.display = 'inline-block';
+    }
+  });
+
+  function getStartButton() {
+    return document.getElementById('start');
+  }
+
+  function getStopButton() {
+    return document.getElementById('stop');
+  }
+
+  function start() {
+    getStartButton().style.display = 'none';
+    getStopButton().style.display = 'block';
+    sendMessageToActiveTab({message: 'start'});
+  }
+
+  function stop() {
+    getStartButton().style.display = 'block';
+    getStopButton().style.display = 'none';
+    sendMessageToActiveTab({message: 'stop'});
+  }
+
+  function sendMessageToActiveTab(message, callback) {
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+      chrome.tabs.sendMessage(tabs[0].id, message, callback);
     });
-  });
-
-  document.getElementById('start').addEventListener('click', start, false);
-  document.getElementById('stop').addEventListener('click', stop, false);
-
-  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-    chrome.tabs.sendMessage(tabs[0].id, {message: 'info'}, function(response) {
-      // this logs undefined apparently due to racing conditions
-      console.log(response);
-
-      response = response || {message: 'inactive'};
-
-      if (response.message === 'inactive') {
-        document.getElementById('stop').style.display = 'none';
-        document.getElementById('start').style.display = 'inline-block';
-      }
-
-      if (response.message === 'active') {
-        document.getElementById('stop').style.display = 'inline-block';
-        document.getElementById('start').style.display = 'none';
-      }
-
-    });
-  });
-});
-
-function start() {
-  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-    chrome.tabs.sendMessage(tabs[0].id, {message: 'start'});
-    document.getElementById('start').style.display = 'none';
-    document.getElementById('stop').style.display = 'block';
-  });
-}
-
-function stop() {
-  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-    chrome.tabs.sendMessage(tabs[0].id, {message: 'stop'});
-    document.getElementById('start').style.display = 'block';
-    document.getElementById('stop').style.display = 'none';
-  });
-}
+  }
+}());

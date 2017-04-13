@@ -24,7 +24,8 @@
       "js": [
         "app/content.js",
         "app/public.js"
-      ]
+      ],
+      "run_at": "document_idle"
     }
   ],
   "permissions": ["activeTab", "tabs"],

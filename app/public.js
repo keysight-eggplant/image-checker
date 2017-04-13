@@ -141,11 +141,17 @@
   }
 
   function getUrl(element) {
-    let bkg = window.getComputedStyle(element).backgroundImage;
-    // as part of style all urls are url("........")
-    bkg = bkg.substring(5, bkg.length - 2);
-
-    return element.src ||  bkg;
+    if (element.src) {
+      return element.src;
+    }
+    else {
+      let bkg = window.getComputedStyle(element).backgroundImage;
+      let URL_REGEX = /url\((.*)\)/;
+      let url = URL_REGEX.exec(bkg);
+      if (url) {
+        return url[1].replace(/["]/g, '');
+      }
+    }
   }
 
   function collectionToArray(domCollection) {
