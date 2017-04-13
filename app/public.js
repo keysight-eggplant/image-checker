@@ -30,17 +30,16 @@
         renderedP.innerHTML = `Display: ${ image.width } x ${ image.height }`;
         div.appendChild(renderedP);
 
-        if (image.naturalWidth) {
-          let naturalP = document.createElement('p');
-          naturalP.innerHTML = `Natural: ${ image.naturalWidth } x ${ image.naturalHeight }`;
-          div.appendChild(naturalP);
 
-          let optimalP = document.createElement('p');
-          let naturalArea = image.naturalWidth * image.naturalHeight;
-          let renderArea = image.width * image.height * window.devicePixelRatio;
-          optimalP.innerHTML = `Image coverage: ${ (naturalArea / renderArea * 100).toFixed(2) }%`;
-          div.appendChild(optimalP);
-        }
+        let naturalP = document.createElement('p');
+        naturalP.innerHTML = `Natural: ${ image.naturalSize.width } x ${ image.naturalSize.height }`;
+        div.appendChild(naturalP);
+
+        let optimalP = document.createElement('p');
+        let naturalArea = image.naturalSize.width * image.naturalSize.height;
+        let renderArea = image.width * image.height * window.devicePixelRatio;
+        optimalP.innerHTML = `Image coverage: ${ (naturalArea / renderArea * 100).toFixed(2) }%`;
+        div.appendChild(optimalP);
 
         let sizeP = document.createElement('p');
         sizeP.innerHTML = `File Size: ${ image.size } KB`;
@@ -70,9 +69,7 @@
         position: getElementTopLeft(element),
         height: element.offsetHeight,
         width: element.offsetWidth,
-        //TODO build a function to fetch natural sizes if they are not defined
-        naturalHeight: element.naturalHeight,
-        naturalWidth: element.naturalWidth
+        naturalSize: getNaturalSize(element)
       };
     }).filter(image => !(!image.height || !image.width || (!image.position.top && !image.position.left)));
   }
@@ -119,6 +116,23 @@
     return location;
   }
 
+  function getNaturalSize(element) {
+    if (element.naturalWidth) {
+      return {
+        width: element.naturalWidth,
+        height: element.naturalHeight
+      };
+    } else {
+      let image = new Image();
+      image.src = getUrl(element);
+
+      return {
+        width: image.naturalWidth,
+        height: image.naturalHeight
+      };
+    }
+  }
+
   function getSize(element) {
     return performance.getEntriesByName(getUrl(element))[0].encodedBodySize;
   }
@@ -149,6 +163,7 @@
       _collectionToArray: collectionToArray,
       _getUrl: getUrl,
       _getSize: getSize,
+      _getNaturalSize: getNaturalSize,
       _getElementTopLeft: getElementTopLeft,
       _haveImages: haveImages,
       _processUrl: processUrl
