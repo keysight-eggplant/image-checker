@@ -1,0 +1,20 @@
+.ncc-image-checker-overlay {
+  position: absolute;
+  z-index: 1000;
+  background-color: rgba(220, 210, 210, 0.8);
+  box-sizing: border-box;
+  padding: 5px;
+}
+
+.ncc-image-checker-overlay > p, .ncc-image-checker-overlay > a {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+.ncc-image-checker-compact {
+  background-color: black;
+}
+
+.ncc-image-checker-url {
+  font-family: Courier, 'Courier New', Book;
+}
