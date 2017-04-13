@@ -1,28 +1,34 @@
-(function(){
-  const OVERLAY = 'ncc-image-checker-overlay';
-  const URL = 'ncc-image-checker-url';
-  const COMPACT ='ncc-image-checker-compact';
+(function() {
+  const OVERLAY_CLASS = 'ncc-image-checker-overlay';
+  const URL_CLASS = 'ncc-image-checker-url';
+  const COMPACT_CLASS = 'ncc-image-checker-compact';
+  const BACKGROUND_IMAGE_URL_REGEX = /url\((.*)\)/i;
 
-  function buildImagesOverlay(images) {
+  function showImagesInfo(images) {
     let body = document.getElementsByTagName('body')[0];
-    findImages(images).map(image => {
+    getImages(images).map(image => {
+      console.log(image);
       let div = document.createElement('div');
-      div.classList.add(OVERLAY);
+      div.classList.add(OVERLAY_CLASS);
       div.style.width = image.width + 'px';
       div.style.height = image.height + 'px';
-      div.style.top = image.position.top;
-      div.style.left = image.position.left;
+      div.style.top = image.position.top + 'px';
+      div.style.left = image.position.left + 'px';
 
       //if element small or medium
       div.setAttribute('title', image.url);
 
-      if (image.width > 150 && image.height > 50) {
-        if (image.height > 120) {
+      const MIN_IMAGE_CONTENT_WIDTH = 150;
+      const MIN_IMAGE_CONTENT_HEIGHT = 50;
+      const MIN_IMAGE_URL_HEIGHT = 120;
+
+      if (image.width > MIN_IMAGE_CONTENT_WIDTH && image.height > MIN_IMAGE_CONTENT_HEIGHT) {
+        if (image.height > MIN_IMAGE_URL_HEIGHT) {
           let url = document.createElement('a');
-          url.innerHTML = processUrl(image);
+          url.innerHTML = getTruncatedImageUrl(image);
           url.setAttribute('href', image.url);
           url.setAttribute('target', '_blank');
-          url.classList.add(URL);
+          url.classList.add(URL_CLASS);
           div.appendChild(url);
         }
 
@@ -30,23 +36,22 @@
         renderedP.innerHTML = `Display: ${ image.width } x ${ image.height }`;
         div.appendChild(renderedP);
 
-
         let naturalP = document.createElement('p');
         naturalP.innerHTML = `Natural: ${ image.naturalSize.width } x ${ image.naturalSize.height }`;
         div.appendChild(naturalP);
 
         let optimalP = document.createElement('p');
-        let naturalArea = image.naturalSize.width * image.naturalSize.height;
-        let renderArea = image.width * image.height * window.devicePixelRatio;
-        optimalP.innerHTML = `Image coverage: ${ (naturalArea / renderArea * 100).toFixed(2) }%`;
+        optimalP.innerHTML = `Image coverage: ${ getImageCoverage(image).toFixed(2) }%`;
         div.appendChild(optimalP);
 
-        let sizeP = document.createElement('p');
-        sizeP.innerHTML = `File Size: ${ image.size } KB`;
-        div.appendChild(sizeP);
+        if (image.size) {
+          let sizeP = document.createElement('p');
+          sizeP.innerHTML = `File Size: ${ image.size } KB`;
+          div.appendChild(sizeP);
+        }
       } else {
         // some files listed here must be excluded
-        div.classList.add(COMPACT);
+        div.classList.add(COMPACT_CLASS);
       }
 
       //the end
@@ -54,48 +59,82 @@
     });
   }
 
-  function processUrl (image) {
-    let safeSize = (image.width - 10) / 8;
-    return image.url.length < safeSize * 2 ? image.url : image.url.substring(0, safeSize - 3) + '....' + image.url.substring(image.url.length - safeSize + 4, image.url.length);
+  function getImageCoverage(image) {
+    let naturalArea = image.naturalSize.width * image.naturalSize.height;
+    let renderArea = image.width * image.height * window.devicePixelRatio;
+    return (naturalArea / renderArea * 100);
+  }
+
+  function getTruncatedImageUrl(image) {
+    const BOUNDING_BOX_PADDING = 10;
+    const CHARACTER_WIDTH = 10;
+    let limit = 2 * (image.width - BOUNDING_BOX_PADDING) / CHARACTER_WIDTH;
+    let replace = '...';
+    let partialLeft = Math.ceil((limit - replace.length) / 2);
+    let partialRight = Math.floor((limit - replace.length) / 2);
+    if (image.url.length > limit) {
+      return image.url.substr(0, partialLeft) + replace + image.url.substr(-partialRight);
+    }
+    else {
+      return image.url;
+    }
   }
 
   // this is the last point element is a DOM element
-  function findImages(domNodes) {
-    let images = haveImages(domNodes);
+  function getImages(domNodes) {
+    let images = getAvailableImages(domNodes);
     return images.map(element => {
+      let size = getSize(element);
+      if (typeof size === 'number') {
+        size = (size / 1024).toFixed(3);
+      }
       return {
         url: getUrl(element),
-        size: (getSize(element) / 1024).toFixed(3),
+        size: size,
         position: getElementTopLeft(element),
         height: element.offsetHeight,
         width: element.offsetWidth,
         naturalSize: getNaturalSize(element)
       };
-    }).filter(image => !(!image.height || !image.width || (!image.position.top && !image.position.left)));
+    }).filter(byVisibleImage);
   }
 
-  function haveImages(elementsArray) {
-    return elementsArray.filter(elem => {
-      let style = window.getComputedStyle(elem);
+  function getAvailableImages(elementsArray) {
+    return elementsArray
+      .filter(byProbableImage)
+      .filter(byHasUrl);
+  }
 
-      if (style.visibility === "hidden") {
-        return false;
-      }
+  function byVisibleImage(image) {
+    return (image.height && image.width &&
+    typeof image.position.top === 'number' &&
+    typeof image.position.left === 'number')
+  }
 
-      if (elem.tagName === 'IMG') {
+  function byProbableImage(element) {
+    let style = window.getComputedStyle(element);
+
+    if (style.visibility === 'hidden') {
+      return false;
+    }
+
+    if (element.tagName.toLowerCase() === 'img') {
+      return true;
+    }
+
+    if (style.backgroundImage) {
+      let urlMatcher = BACKGROUND_IMAGE_URL_REGEX.exec(style.backgroundImage);
+
+      if (urlMatcher && urlMatcher.length > 1) {
         return true;
       }
+    }
 
-      if (style.backgroundImage) {
-        let urlMatcher = /url\(("?http.*"?)\)/ig.exec(style.backgroundImage);
+    return false;
+  }
 
-        if (urlMatcher && urlMatcher.length > 1) {
-          return true;
-        }
-      }
-
-      return false;
-    }).filter(element => getUrl(element));
+  function byHasUrl(element) {
+    return !!getUrl(element);
   }
 
   function getElementTopLeft(elem) {
@@ -103,9 +142,9 @@
       top: 0,
       left: 0
     };
-    if ( elem.x && elem.y) {
-      location.top = elem.y + 'px';
-      location.left = elem.x + 'px';
+    if (elem.x && elem.y) {
+      location.top = elem.y;
+      location.left = elem.x;
     } else if (elem.offsetParent) {
       do {
         location.top += elem.offsetTop;
@@ -146,19 +185,18 @@
     }
     else {
       let bkg = window.getComputedStyle(element).backgroundImage;
-      let URL_REGEX = /url\((.*)\)/;
-      let url = URL_REGEX.exec(bkg);
+      let url = BACKGROUND_IMAGE_URL_REGEX.exec(bkg);
       if (url) {
         return url[1].replace(/["]/g, '');
       }
     }
   }
 
-  function collectionToArray(domCollection) {
+  function nodeListToArray(nodeList) {
     let array = [];
 
-    for (let i = domCollection.length - 1; i >= 0; i--) {
-      array[i] = domCollection[i];
+    for (let i = 0; i < nodeList.length; i += 1) {
+      array[i] = nodeList[i];
     }
 
     return array;
@@ -167,14 +205,14 @@
   window.NCC = window.NCC || {};
 
   window.NCC.imageChecker = {
-      showImagesInfo: buildImagesOverlay,
-      getImages: findImages,
-      _collectionToArray: collectionToArray,
-      _getUrl: getUrl,
-      _getSize: getSize,
-      _getNaturalSize: getNaturalSize,
-      _getElementTopLeft: getElementTopLeft,
-      _haveImages: haveImages,
-      _processUrl: processUrl
+    showImagesInfo: showImagesInfo,
+    getImages: getImages,
+    _nodeListToArray: nodeListToArray,
+    _getUrl: getUrl,
+    _getSize: getSize,
+    _getNaturalSize: getNaturalSize,
+    _getElementTopLeft: getElementTopLeft,
+    _getAvailableImages: getAvailableImages,
+    _getTruncatedImageUrl: getTruncatedImageUrl
   };
 }());
