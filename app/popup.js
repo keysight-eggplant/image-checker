@@ -3,5 +3,5 @@ window.addEventListener('DOMContentLoaded', function() {
     chrome.tabs.update({
       url: 'mailto:drew@aaa.com'
     });
-  })
+  });
 });
