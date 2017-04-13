@@ -17,12 +17,14 @@
       div.setAttribute('title', image.url);
 
       if (image.width > 150 && image.height > 50) {
-        let url = document.createElement('a');
-        url.innerHTML = processUrl(image);
-        url.setAttribute('href', image.url);
-        url.setAttribute('target', '_blank');
-        url.classList.add(URL);
-        div.appendChild(url);
+        if (image.height > 120) {
+          let url = document.createElement('a');
+          url.innerHTML = processUrl(image);
+          url.setAttribute('href', image.url);
+          url.setAttribute('target', '_blank');
+          url.classList.add(URL);
+          div.appendChild(url);
+        }
 
         let renderedP = document.createElement('p');
         renderedP.innerHTML = `Display: ${ image.width } x ${ image.height }`;
@@ -54,8 +56,8 @@
   }
 
   function processUrl (image) {
-    let safeSize = (image.width - 10) * 0.1;
-    return image.url.length < safeSize * 2 ? image.url : image.url.substring(0, safeSize - 3) + '.....' + image.url.substring(image.url.length - safeSize + 3, image.url.length);
+    let safeSize = (image.width - 10) / 8;
+    return image.url.length < safeSize * 2 ? image.url : image.url.substring(0, safeSize - 3) + '....' + image.url.substring(image.url.length - safeSize + 4, image.url.length);
   }
 
   // this is the last point element is a DOM element
