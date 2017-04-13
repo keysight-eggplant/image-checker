@@ -134,7 +134,10 @@
   }
 
   function getSize(element) {
-    return performance.getEntriesByName(getUrl(element))[0].encodedBodySize;
+    let performanceEntry = performance.getEntriesByName(getUrl(element))[0];
+    if (performanceEntry) {
+      return performanceEntry.encodedBodySize;
+    }
   }
 
   function getUrl(element) {
