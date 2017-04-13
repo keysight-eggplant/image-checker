@@ -19,8 +19,14 @@
         "<all_urls>"
       ],
       "css": [
-        "app/styles/app.css"
+        "app/styles/content.css"
+      ],
+      "js": [
+        "app/content.js",
+        "app/public.js"
       ]
     }
-  ]
+  ],
+  "permissions": ["activeTab", "tabs"],
+  "minimum_chrome_version": "54.0.2840"
 }
