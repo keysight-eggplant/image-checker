@@ -10,6 +10,8 @@
   };
 
   function showImagesInfo(images) {
+    images = images || document.getElementsByTagName('*');
+    images = nodeListToArray(images);
     let body = document.getElementsByTagName('body')[0];
     getImages(images).map(image => {
       let div = document.createElement('div');
@@ -44,7 +46,7 @@
       } else {
         let info = `Coverage: ${ getImageCoverage(image).toFixed(2) }%`;
 
-        if (image.size) {
+        if (image.size && image.size > 0) {
           info += `, File Size: ${ image.size } KB`;
         }
 
@@ -54,6 +56,14 @@
         appendAnchorToBody(div, image.url);
       }
     });
+  }
+
+  function hideImagesInfo() {
+    nodeListToArray(document.querySelectorAll('.ncc-image-checker-overlay')).map(o => o.remove());
+  }
+
+  function isImagesInfoActive() {
+    return document.querySelectorAll('.ncc-image-checker-overlay').length > 0;
   }
 
   function appendInfoToElement(div, image) {
@@ -71,7 +81,7 @@
 
     if (image.size) {
       let sizeP = document.createElement('p');
-      sizeP.innerHTML = `File Size: ${ image.size } KB`;
+      sizeP.innerHTML = image.size > 0 ? `File Size: ${ image.size } KB` : `File size unavailable`;
       div.appendChild(sizeP);
     }
   }
@@ -247,7 +257,9 @@
 
   window.NCC.imageChecker = {
     showImagesInfo: showImagesInfo,
-    getImages: getImages,
+    hideImagesInfo: hideImagesInfo,
+    isImagesInfoActive: isImagesInfoActive,
+    _getImages: getImages,
     _nodeListToArray: nodeListToArray,
     _getUrl: getUrl,
     _getSize: getSize,
