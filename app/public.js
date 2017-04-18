@@ -39,7 +39,7 @@
       } else {
         let info = `Coverage: ${ getImageCoverage(image).toFixed(2) }%`;
 
-        if (image.size) {
+        if (image.size && image.size > 0) {
           info += `, File Size: ${ image.size } KB`;
         }
 
@@ -74,7 +74,7 @@
 
     if (image.size) {
       let sizeP = document.createElement('p');
-      sizeP.innerHTML = `File Size: ${ image.size } KB`;
+      sizeP.innerHTML = image.size > 0 ? `File Size: ${ image.size } KB` : `File size unavailable`;
       div.appendChild(sizeP);
     }
   }
