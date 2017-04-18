@@ -2,17 +2,23 @@
   const OVERLAY_CLASS = 'ncc-image-checker-overlay';
   const URL_CLASS = 'ncc-image-checker-url';
   const BACKGROUND_IMAGE_URL_REGEX = /url\((.*)\)/i;
+  const COLORS = {
+    red: 'rgba(238,88,89,0.8)',
+    orange: 'rgba(246,158,97,0.8)',
+    green: 'rgba(154,193,110,0.8)',
+    blue: 'rgba(86,179,205,0.8)'
+  };
 
   function showImagesInfo(images) {
     let body = document.getElementsByTagName('body')[0];
     getImages(images).map(image => {
-      console.log(image);
       let div = document.createElement('div');
       div.classList.add(OVERLAY_CLASS);
       div.style.width = image.width + 'px';
       div.style.height = image.height + 'px';
       div.style.top = image.position.top + 'px';
       div.style.left = image.position.left + 'px';
+      div.style.backgroundColor = getBackgroundColor(getImageCoverage(image));
 
       const MIN_IMAGE_CONTENT_WIDTH = 150;
       const MIN_IMAGE_CONTENT_HEIGHT = 50;
@@ -76,6 +82,22 @@
     anchor.setAttribute('target', '_blank');
     anchor.appendChild(element);
     document.getElementsByTagName('body')[0].appendChild(anchor);
+  }
+
+  function getBackgroundColor(percentage) {
+    if (percentage >= 75 && percentage < 150) {
+      return COLORS.green;
+    }
+
+    if (percentage >= 150 && percentage < 300) {
+      return COLORS.orange;
+    }
+
+    if (percentage >= 300) {
+      return COLORS.red;
+    }
+
+    return  COLORS.blue;
   }
 
   function getImageCoverage(image) {
