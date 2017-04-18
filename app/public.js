@@ -1,7 +1,6 @@
 (function() {
   const OVERLAY_CLASS = 'ncc-image-checker-overlay';
   const URL_CLASS = 'ncc-image-checker-url';
-  const COMPACT_CLASS = 'ncc-image-checker-compact';
   const BACKGROUND_IMAGE_URL_REGEX = /url\((.*)\)/i;
 
   function showImagesInfo(images) {
@@ -15,14 +14,13 @@
       div.style.top = image.position.top + 'px';
       div.style.left = image.position.left + 'px';
 
-      //if element small or medium
-      div.setAttribute('title', image.url);
-
       const MIN_IMAGE_CONTENT_WIDTH = 150;
       const MIN_IMAGE_CONTENT_HEIGHT = 50;
       const MIN_IMAGE_URL_HEIGHT = 120;
 
       if (image.width > MIN_IMAGE_CONTENT_WIDTH && image.height > MIN_IMAGE_CONTENT_HEIGHT) {
+        div.setAttribute('title', image.url);
+
         if (image.height > MIN_IMAGE_URL_HEIGHT) {
           let url = document.createElement('a');
           url.innerHTML = getTruncatedImageUrl(image);
@@ -30,33 +28,54 @@
           url.setAttribute('target', '_blank');
           url.classList.add(URL_CLASS);
           div.appendChild(url);
-        }
 
-        let renderedP = document.createElement('p');
-        renderedP.innerHTML = `Display: ${ image.width } x ${ image.height }`;
-        div.appendChild(renderedP);
-
-        let naturalP = document.createElement('p');
-        naturalP.innerHTML = `Natural: ${ image.naturalSize.width } x ${ image.naturalSize.height }`;
-        div.appendChild(naturalP);
-
-        let optimalP = document.createElement('p');
-        optimalP.innerHTML = `Image coverage: ${ getImageCoverage(image).toFixed(2) }%`;
-        div.appendChild(optimalP);
-
-        if (image.size) {
-          let sizeP = document.createElement('p');
-          sizeP.innerHTML = `File Size: ${ image.size } KB`;
-          div.appendChild(sizeP);
+          appendInfoToElement(div, image);
+          body.appendChild(div);
+        } else {
+          appendInfoToElement(div, image);
+          appendAnchorToBody(div, image.url);
         }
       } else {
-        // some files listed here must be excluded
-        div.classList.add(COMPACT_CLASS);
-      }
+        let info = `Coverage: ${ getImageCoverage(image).toFixed(2) }%`;
 
-      //the end
-      body.appendChild(div);
+        if (image.size) {
+          info += `, File Size: ${ image.size } KB`;
+        }
+
+        info += `, URL: ${ image.url }`;
+        div.setAttribute('title', info);
+
+        appendAnchorToBody(div, image.url);
+      }
     });
+  }
+
+  function appendInfoToElement(div, image) {
+    let renderedP = document.createElement('p');
+    renderedP.innerHTML = `Display: ${ image.width } x ${ image.height }`;
+    div.appendChild(renderedP);
+
+    let naturalP = document.createElement('p');
+    naturalP.innerHTML = `Natural: ${ image.naturalSize.width } x ${ image.naturalSize.height }`;
+    div.appendChild(naturalP);
+
+    let optimalP = document.createElement('p');
+    optimalP.innerHTML = `Image coverage: ${ getImageCoverage(image).toFixed(2) }%`;
+    div.appendChild(optimalP);
+
+    if (image.size) {
+      let sizeP = document.createElement('p');
+      sizeP.innerHTML = `File Size: ${ image.size } KB`;
+      div.appendChild(sizeP);
+    }
+  }
+
+  function appendAnchorToBody(element, url) {
+    let anchor = document.createElement('a');
+    anchor.setAttribute('href', url);
+    anchor.setAttribute('target', '_blank');
+    anchor.appendChild(element);
+    document.getElementsByTagName('body')[0].appendChild(anchor);
   }
 
   function getImageCoverage(image) {
