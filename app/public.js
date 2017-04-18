@@ -4,9 +4,10 @@
   const BACKGROUND_IMAGE_URL_REGEX = /url\((.*)\)/i;
 
   function showImagesInfo(images) {
+    images = images || document.getElementsByTagName('*');
+    images = nodeListToArray(images);
     let body = document.getElementsByTagName('body')[0];
     getImages(images).map(image => {
-      console.log(image);
       let div = document.createElement('div');
       div.classList.add(OVERLAY_CLASS);
       div.style.width = image.width + 'px';
@@ -48,6 +49,14 @@
         appendAnchorToBody(div, image.url);
       }
     });
+  }
+
+  function hideImagesInfo() {
+    nodeListToArray(document.querySelectorAll('.ncc-image-checker-overlay')).map(o => o.remove());
+  }
+
+  function isImagesInfoActive() {
+    return document.querySelectorAll('.ncc-image-checker-overlay').length > 0;
   }
 
   function appendInfoToElement(div, image) {
@@ -225,7 +234,9 @@
 
   window.NCC.imageChecker = {
     showImagesInfo: showImagesInfo,
-    getImages: getImages,
+    hideImagesInfo: hideImagesInfo,
+    isImagesInfoActive: isImagesInfoActive,
+    _getImages: getImages,
     _nodeListToArray: nodeListToArray,
     _getUrl: getUrl,
     _getSize: getSize,

@@ -1,15 +1,14 @@
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.message === 'start') {
-    let domNodes = window.NCC.imageChecker._nodeListToArray(document.getElementsByTagName('*'));
-    window.NCC.imageChecker.showImagesInfo(domNodes);
+    window.NCC.imageChecker.showImagesInfo();
   }
 
   if (request.message === 'stop') {
-    window.NCC.imageChecker._nodeListToArray(document.querySelectorAll('.ncc-image-checker-overlay')).map(o => o.remove());
+    window.NCC.imageChecker.hideImagesInfo();
   }
 
   if (request.message === 'info') {
-    document.querySelectorAll('.ncc-image-checker-overlay').length > 0
+    window.NCC.imageChecker.isImagesInfoActive()
       ? sendResponse({message: 'active'})
       : sendResponse({message: 'inactive'});
   }
