@@ -5,7 +5,6 @@
       getStopButton().style.display = 'none';
     }
   });
-});
 
   getStartButton().style.display = 'none';
   getStopButton().style.display = 'none';

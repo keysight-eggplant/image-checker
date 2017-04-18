@@ -2,6 +2,12 @@
   const OVERLAY_CLASS = 'ncc-image-checker-overlay';
   const URL_CLASS = 'ncc-image-checker-url';
   const BACKGROUND_IMAGE_URL_REGEX = /url\((.*)\)/i;
+  const COLORS = {
+    red: 'rgba(238,88,89,0.8)',
+    orange: 'rgba(246,158,97,0.8)',
+    green: 'rgba(154,193,110,0.8)',
+    blue: 'rgba(86,179,205,0.8)'
+  };
 
   function showImagesInfo(images) {
     images = images || document.getElementsByTagName('*');
@@ -89,7 +95,24 @@
     element.style.height = image.height + 'px';
     element.style.top = image.position.top + 'px';
     element.style.left = image.position.left + 'px';
+    element.style.backgroundColor = getBackgroundColor(getImageCoverage(image));
     element.classList.add(OVERLAY_CLASS);
+  }
+
+  function getBackgroundColor(percentage) {
+    if (percentage >= 75 && percentage < 150) {
+      return COLORS.green;
+    }
+
+    if (percentage >= 150 && percentage < 300) {
+      return COLORS.orange;
+    }
+
+    if (percentage >= 300) {
+      return COLORS.red;
+    }
+
+    return  COLORS.blue;
   }
 
   function getImageCoverage(image) {
