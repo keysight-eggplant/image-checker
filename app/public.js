@@ -208,7 +208,10 @@
   }
 
   function getUrl(element) {
-    if (element.src) {
+    if (element.currentSrc) {
+      return element.currentSrc;
+    }
+    else if (element.src) {
       return element.src;
     }
     else {
