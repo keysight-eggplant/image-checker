@@ -276,6 +276,7 @@
     _getImageCoverage: getImageCoverage,
     _getElementTopLeft: getElementTopLeft,
     _getAvailableImages: getAvailableImages,
-    _getTruncatedImageUrl: getTruncatedImageUrl
+    _getTruncatedImageUrl: getTruncatedImageUrl,
+    _getBackgroundColor: getBackgroundColor
   };
 }());
