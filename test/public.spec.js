@@ -10,6 +10,8 @@ describe('imageChecker', function() {
   let invisibleImg;
   let smallWidthImg;
   let smallWidthUrlImg;
+  let missingImg;
+  let crossDomainImg;
 
   beforeEach(function(done) {
     images = document.createElement('div');
@@ -55,6 +57,7 @@ describe('imageChecker', function() {
   describe('showImagesInfo()', function() {
     it('should show image overlays only for available images', function() {
       createDomNodes([
+        createMissingImg(),
         createBackgroundImg(),
         createNoBackgroundImg(),
         createHiddenImg(),
@@ -145,13 +148,33 @@ describe('imageChecker', function() {
         let imageOverlay = getImageOverlay(0);
         let titleParts = imageOverlay.title.split(',');
         expect(titleParts[0].trim()).toEqual('Coverage: 106.67%');
-        expect(titleParts[1].trim()).toEqual('File Size: 4.464 KB', 'URL: test/assets/placeholder-100x80.png');
+        expect(titleParts[1].trim()).toEqual('File Size: 4.464 KB');
         expect(titleParts[2].trim()).toEqual(jasmine.stringMatching('URL: .*test/assets/placeholder-100x80.png'));
       });
 
       it('should not have any content', function() {
         let textLines = getImageOverlayTextLines(0);
         expect(textLines).toEqual(['']);
+      });
+    });
+
+    describe('cross domain images overlays', function() {
+      beforeEach(function() {
+
+      });
+
+      it('should not show file size', function(done) {
+        createDomNodes([
+          createCrossDomainImg()
+        ]);
+        spyOn(window.performance, 'getEntriesByName').and.returnValue([{encodedBodySize: 0}]);
+        crossDomainImg.onload = function() {
+          window.NCC.imageChecker.showImagesInfo();
+
+          let textLines = getImageOverlayTextLines(0);
+          expect(textLines).toContain('File size unavailable');
+          done();
+        };
       });
     });
   });
@@ -355,6 +378,18 @@ describe('imageChecker', function() {
     bigImg.src = 'base/test/assets/placeholder-100x80.png';
     bigImg.style = 'display: block;width: 200px;height: 160px;';
     return bigImg;
+  }
+
+  function createMissingImg() {
+    missingImg = document.createElement('img');
+    missingImg.src = 'not-found.png';
+    return missingImg;
+  }
+
+  function createCrossDomainImg() {
+    crossDomainImg = document.createElement('img');
+    crossDomainImg.src = 'https://upload.wikimedia.org/wikipedia/commons/7/73/Flag_of_Romania.svg';
+    return crossDomainImg;
   }
 
   function createDomNodes(domNodes) {
