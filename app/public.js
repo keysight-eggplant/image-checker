@@ -24,14 +24,13 @@
         div.setAttribute('title', image.url);
 
         if (image.height > MIN_IMAGE_URL_HEIGHT) {
-          styleElement(div, image);
           let url = document.createElement('a');
           url.innerHTML = getTruncatedImageUrl(image);
           url.setAttribute('href', image.url);
           url.setAttribute('target', '_blank');
           url.classList.add(URL_CLASS);
           div.appendChild(url);
-
+          styleElement(div, image);
           appendInfoToElement(div, image);
           body.appendChild(div);
         } else {
@@ -46,9 +45,8 @@
         }
 
         info += `, URL: ${ image.url }`;
-        div.setAttribute('title', info);
 
-        appendAnchorToBody(div, image);
+        appendAnchorToBody(div, image, info);
       }
     });
   }
@@ -62,6 +60,7 @@
   }
 
   function appendInfoToElement(div, image) {
+    div.setAttribute('title', image.url);
     let renderedP = document.createElement('p');
     renderedP.innerHTML = `Display: ${ image.width } x ${ image.height }`;
     div.appendChild(renderedP);
@@ -81,11 +80,13 @@
     }
   }
 
-  function appendAnchorToBody(element, image) {
+  function appendAnchorToBody(element, image, info) {
     let anchor = document.createElement('a');
+    let title = info ? info : element.title;
     styleElement(anchor, image);
     anchor.setAttribute('href', image.url);
     anchor.setAttribute('target', '_blank');
+    anchor.setAttribute('title', title);
     anchor.appendChild(element);
     document.getElementsByTagName('body')[0].appendChild(anchor);
   }
