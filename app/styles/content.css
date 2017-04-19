@@ -1,6 +1,6 @@
 .ncc-image-checker-overlay {
   position: absolute;
-  z-index: 1000;
+  z-index: 999999;
   box-sizing: border-box;
   padding: 5px;
 }

@@ -15,12 +15,6 @@
     let body = document.getElementsByTagName('body')[0];
     getImages(images).map(image => {
       let div = document.createElement('div');
-      div.classList.add(OVERLAY_CLASS);
-      div.style.width = image.width + 'px';
-      div.style.height = image.height + 'px';
-      div.style.top = image.position.top + 'px';
-      div.style.left = image.position.left + 'px';
-      div.style.backgroundColor = getBackgroundColor(getImageCoverage(image));
 
       const MIN_IMAGE_CONTENT_WIDTH = 150;
       const MIN_IMAGE_CONTENT_HEIGHT = 50;
@@ -36,12 +30,12 @@
           url.setAttribute('target', '_blank');
           url.classList.add(URL_CLASS);
           div.appendChild(url);
-
+          styleElement(div, image);
           appendInfoToElement(div, image);
           body.appendChild(div);
         } else {
           appendInfoToElement(div, image);
-          appendAnchorToBody(div, image.url);
+          appendAnchorToBody(div, image);
         }
       } else {
         let info = `Coverage: ${ getImageCoverage(image).toFixed(2) }%`;
@@ -51,9 +45,8 @@
         }
 
         info += `, URL: ${ image.url }`;
-        div.setAttribute('title', info);
 
-        appendAnchorToBody(div, image.url);
+        appendAnchorToBody(div, image, info);
       }
     });
   }
@@ -67,6 +60,7 @@
   }
 
   function appendInfoToElement(div, image) {
+    div.setAttribute('title', image.url);
     let renderedP = document.createElement('p');
     renderedP.innerHTML = `Display: ${ image.width } x ${ image.height }`;
     div.appendChild(renderedP);
@@ -86,12 +80,24 @@
     }
   }
 
-  function appendAnchorToBody(element, url) {
+  function appendAnchorToBody(element, image, info) {
     let anchor = document.createElement('a');
-    anchor.setAttribute('href', url);
+    let title = info ? info : element.title;
+    styleElement(anchor, image);
+    anchor.setAttribute('href', image.url);
     anchor.setAttribute('target', '_blank');
+    anchor.setAttribute('title', title);
     anchor.appendChild(element);
     document.getElementsByTagName('body')[0].appendChild(anchor);
+  }
+
+  function styleElement(element, image) {
+    element.style.width = image.width + 'px';
+    element.style.height = image.height + 'px';
+    element.style.top = image.position.top + 'px';
+    element.style.left = image.position.left + 'px';
+    element.style.backgroundColor = getBackgroundColor(getImageCoverage(image));
+    element.classList.add(OVERLAY_CLASS);
   }
 
   function getBackgroundColor(percentage) {
@@ -159,7 +165,7 @@
   function byVisibleImage(image) {
     return (image.height && image.width &&
     typeof image.position.top === 'number' &&
-    typeof image.position.left === 'number')
+    typeof image.position.left === 'number');
   }
 
   function byProbableImage(element) {
@@ -231,7 +237,10 @@
   }
 
   function getUrl(element) {
-    if (element.src) {
+    if (element.currentSrc) {
+      return element.currentSrc;
+    }
+    else if (element.src) {
       return element.src;
     }
     else {
@@ -264,6 +273,7 @@
     _getUrl: getUrl,
     _getSize: getSize,
     _getNaturalSize: getNaturalSize,
+    _getImageCoverage: getImageCoverage,
     _getElementTopLeft: getElementTopLeft,
     _getAvailableImages: getAvailableImages,
     _getTruncatedImageUrl: getTruncatedImageUrl
