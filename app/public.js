@@ -10,20 +10,15 @@
     getImages(images).map(image => {
       let div = document.createElement('div');
 
-      div.style.width = image.width + 'px';
-      div.style.height = image.height + 'px';
-      div.style.top = image.position.top + 'px';
-      div.style.left = image.position.left + 'px';
-
       const MIN_IMAGE_CONTENT_WIDTH = 150;
       const MIN_IMAGE_CONTENT_HEIGHT = 50;
       const MIN_IMAGE_URL_HEIGHT = 120;
 
       if (image.width > MIN_IMAGE_CONTENT_WIDTH && image.height > MIN_IMAGE_CONTENT_HEIGHT) {
         div.setAttribute('title', image.url);
-        div.classList.add(OVERLAY_CLASS);
 
         if (image.height > MIN_IMAGE_URL_HEIGHT) {
+          styleElement(div, image);
           let url = document.createElement('a');
           url.innerHTML = getTruncatedImageUrl(image);
           url.setAttribute('href', image.url);
@@ -35,7 +30,7 @@
           body.appendChild(div);
         } else {
           appendInfoToElement(div, image);
-          appendAnchorToBody(div, image.url);
+          appendAnchorToBody(div, image);
         }
       } else {
         let info = `Coverage: ${ getImageCoverage(image).toFixed(2) }%`;
@@ -47,7 +42,7 @@
         info += `, URL: ${ image.url }`;
         div.setAttribute('title', info);
 
-        appendAnchorToBody(div, image.url);
+        appendAnchorToBody(div, image);
       }
     });
   }
@@ -80,13 +75,21 @@
     }
   }
 
-  function appendAnchorToBody(element, url) {
+  function appendAnchorToBody(element, image) {
     let anchor = document.createElement('a');
-    anchor.classList.add(OVERLAY_CLASS);
-    anchor.setAttribute('href', url);
+    styleElement(anchor, image);
+    anchor.setAttribute('href', image.url);
     anchor.setAttribute('target', '_blank');
     anchor.appendChild(element);
     document.getElementsByTagName('body')[0].appendChild(anchor);
+  }
+
+  function styleElement(element, image) {
+    element.style.width = image.width + 'px';
+    element.style.height = image.height + 'px';
+    element.style.top = image.position.top + 'px';
+    element.style.left = image.position.left + 'px';
+    element.classList.add(OVERLAY_CLASS);
   }
 
   function getImageCoverage(image) {
