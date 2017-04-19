@@ -141,7 +141,7 @@
   function byVisibleImage(image) {
     return (image.height && image.width &&
     typeof image.position.top === 'number' &&
-    typeof image.position.left === 'number')
+    typeof image.position.left === 'number');
   }
 
   function byProbableImage(element) {
@@ -249,6 +249,7 @@
     _getUrl: getUrl,
     _getSize: getSize,
     _getNaturalSize: getNaturalSize,
+    _getImageCoverage: getImageCoverage,
     _getElementTopLeft: getElementTopLeft,
     _getAvailableImages: getAvailableImages,
     _getTruncatedImageUrl: getTruncatedImageUrl
