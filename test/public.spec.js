@@ -272,7 +272,24 @@ describe('imageChecker', function() {
       ]);
 
       expect(window.NCC.imageChecker._getNaturalSize(backgroundImg)).toEqual({width: 100, height: 80});
+    });
+  });
 
+  describe('_getBackgroundColor', function() {
+    it('should return high coverage color', function() {
+      expect(window.NCC.imageChecker._getBackgroundColor(300)).toEqual('rgba(238,88,89,0.8)');
+    });
+
+    it('should return medium coverage color', function() {
+      expect(window.NCC.imageChecker._getBackgroundColor(150)).toEqual('rgba(246,158,97,0.8)');
+    });
+
+    it('should return low coverage color', function() {
+      expect(window.NCC.imageChecker._getBackgroundColor(75)).toEqual('rgba(154,193,110,0.8)');
+    });
+
+    it('should return very low coverage color', function() {
+      expect(window.NCC.imageChecker._getBackgroundColor(74)).toEqual('rgba(86,179,205,0.8)');
     });
   });
 
