@@ -143,7 +143,7 @@ describe('imageChecker', function() {
 
       it('should only have title', function() {
         let imageOverlay = getImageOverlay(0);
-        let titleParts = imageOverlay.getElementsByTagName('div')[0].title.split(',');
+        let titleParts = imageOverlay.title.split(',');
         expect(titleParts[0].trim()).toEqual('Coverage: 106.67%');
         expect(titleParts[1].trim()).toEqual('File Size: 4.464 KB', 'URL: test/assets/placeholder-100x80.png');
         expect(titleParts[2].trim()).toEqual(jasmine.stringMatching('URL: .*test/assets/placeholder-100x80.png'));
