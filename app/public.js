@@ -9,7 +9,7 @@
     let body = document.getElementsByTagName('body')[0];
     getImages(images).map(image => {
       let div = document.createElement('div');
-      div.classList.add(OVERLAY_CLASS);
+
       div.style.width = image.width + 'px';
       div.style.height = image.height + 'px';
       div.style.top = image.position.top + 'px';
@@ -21,6 +21,7 @@
 
       if (image.width > MIN_IMAGE_CONTENT_WIDTH && image.height > MIN_IMAGE_CONTENT_HEIGHT) {
         div.setAttribute('title', image.url);
+        div.classList.add(OVERLAY_CLASS);
 
         if (image.height > MIN_IMAGE_URL_HEIGHT) {
           let url = document.createElement('a');
@@ -81,6 +82,7 @@
 
   function appendAnchorToBody(element, url) {
     let anchor = document.createElement('a');
+    anchor.classList.add(OVERLAY_CLASS);
     anchor.setAttribute('href', url);
     anchor.setAttribute('target', '_blank');
     anchor.appendChild(element);
