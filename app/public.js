@@ -17,7 +17,7 @@
       let div = document.createElement('div');
 
       const MIN_IMAGE_CONTENT_WIDTH = 150;
-      const MIN_IMAGE_CONTENT_HEIGHT = 50;
+      const MIN_IMAGE_CONTENT_HEIGHT = 70;
       const MIN_IMAGE_URL_HEIGHT = 120;
 
       if (image.width > MIN_IMAGE_CONTENT_WIDTH && image.height > MIN_IMAGE_CONTENT_HEIGHT) {

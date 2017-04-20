@@ -1,19 +1,20 @@
 .ncc-image-checker-overlay {
-  position: absolute;
-  z-index: 999999;
-  box-sizing: border-box;
-  padding: 5px;
+  position: absolute !important;
+  z-index: 999999 !important;
+  box-sizing: border-box !important;
+  padding: 5px !important;
 }
 
-.ncc-image-checker-overlay > p, .ncc-image-checker-overlay > a {
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  padding: 0;
-  margin: 0;
-  font-size: 0.9em;
-  line-height: 1.2em;
+.ncc-image-checker-overlay p, .ncc-image-checker-overlay a {
+  overflow-wrap: break-word !important;
+  word-wrap: break-word !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  font-size: 14px !important;
+  line-height: 17px !important;
+  color: #000 !important;
 }
 
 .ncc-image-checker-url {
-  font-family: Courier, 'Courier New', Book;
+  font-family: Courier, 'Courier New', Book !important;
 }
