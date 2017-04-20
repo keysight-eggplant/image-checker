@@ -131,7 +131,7 @@
 
   function getImageCoverage(image) {
     let naturalArea = image.naturalSize.width * image.naturalSize.height;
-    let renderArea = image.width * image.height * window.devicePixelRatio;
+    let renderArea = image.width * image.height;
     return (naturalArea / renderArea * 100);
   }
 

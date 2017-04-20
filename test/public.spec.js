@@ -257,8 +257,7 @@ describe('imageChecker', function() {
   });
 
   describe('_getImageCoverage()', function() {
-    it('should calculate using devicePixelRatio', function() {
-      expect(window.devicePixelRatio).toEqual(1);
+    it('should calculate natural size percentage of rendered size', function() {
       expect(window.NCC.imageChecker._getImageCoverage({
         naturalSize: {
           width: 200,
@@ -267,16 +266,6 @@ describe('imageChecker', function() {
         width: 100,
         height: 100
       })).toEqual(400);
-
-      window.devicePixelRatio = 2;
-      expect(window.NCC.imageChecker._getImageCoverage({
-        naturalSize: {
-          width: 200,
-          height: 200
-        },
-        width: 100,
-        height: 100
-      })).toEqual(200);
     });
   });
 
