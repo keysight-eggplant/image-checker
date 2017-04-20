@@ -5,7 +5,7 @@ The quality of layout for the information presented is strongly linked to markdo
 ## Install
 [Download from the Chrome Extension Store](https://github.com/tabanliviu/image-checker)
 or
-1. Clone the ripo
+1. Clone the repo
 2. Open [Chrome Extensions](chrome://extensions)
 3. On the top right, check the checkbox for 'Developer mode'
 3. Click 'Load unpacked extension...'
