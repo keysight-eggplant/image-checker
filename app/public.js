@@ -9,6 +9,11 @@
     blue: 'blue'
   };
 
+  /**
+   * Appends an overlay with images details over the whole web page
+   *
+   * @param {NodeList} [images=All nodes in the DOM] - The Node List to be analysed
+   */
   function showImagesInfo(images) {
     images = images || document.getElementsByTagName('*');
     images = nodeListToArray(images);
@@ -51,10 +56,18 @@
     });
   }
 
+  /**
+   * Remove all overlays
+   */
   function hideImagesInfo() {
     nodeListToArray(document.querySelectorAll('.ncc-image-checker-overlay')).map(o => o.remove());
   }
 
+  /**
+   * Are there images overlays?
+   *
+   * @returns {boolean}
+   */
   function isImagesInfoActive() {
     return document.querySelectorAll('.ncc-image-checker-overlay').length > 0;
   }
