@@ -1,12 +1,20 @@
 # NCC Image Checker - Chrome Extension
-...description...
+Provides image optimisation information within the browser. 
+The quality of layout for the information presented is strongly linked to markdown building techniques used.
 
 ## Install
-[link to chrome extension store]
+[Download from the Chrome Extension Store](http://www.google.com/)
 or
 1. Clone the ripo
-2. Open Chrome Extensions and choose `Load unpacked extension..`
-3. Point it to the root folder
+2. Open [Chrome Extensions](chrome://extensions)
+3. On the top right, check the checkbox for 'Developer mode'
+3. Click 'Load unpacked extension...'
+3. Select the directory where you have cloned this ripo
 
 ## Current limitations
-TBA
+1. the overlays are not responsive
+2. overlay of background images where the element is positioned with negative values or via tranform will display as if the values were positive; why? the javascript api returns absolute values
+3. overlay of carousel images will display where the image is eventhough the image is hidden to the eye
+4. overlapping overlays will cause loss of transparency
+5. file size for some cross origin images is not available (depends of support of perfromanceEntry)
+6. sprites are not bad practice ... yet this tool flags them red, we don't handle them at all
