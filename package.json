@@ -1,6 +1,6 @@
 {
   "name": "image-checker",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Provides image optimisation information within the browser.",
   "repository": {
     "type": "git",
@@ -12,7 +12,13 @@
     "Ian Highet <Ian.Highet@nccgroup.trust>",
     "Liviu Taban <tabanliviu@yahoo.com>"
   ],
-  "license": "MIT",
+  "license": "Apache-2.0",
+  "licenses": [
+    {
+      "type": "Apache-2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  ],
   "bugs": {
     "url": "https://github.com/tabanliviu/image-checker/issues"
   },
