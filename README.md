@@ -14,7 +14,7 @@ or
 ## Current limitations
 1. the overlays are not responsive
 2. overlay of background images where the element is positioned with negative values or via tranform will display as if the values were positive; why? the javascript api returns absolute values
-3. overlay of carousel images will display where the image is eventhough the image is hidden to the eye
-4. overlapping overlays will cause loss of transparency
+3. overlay of carousel images will display for covered images as well
+4. overlapping overlays hide eachother
 5. file size for some cross origin images is not available (depends of support of perfromanceEntry)
 6. sprites are not bad practice ... yet this tool flags them red, we don't handle them at all
