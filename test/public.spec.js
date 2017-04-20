@@ -122,9 +122,9 @@ describe('imageChecker', function() {
       it('should show other info', function() {
         let textLines = getImageOverlayTextLines(0);
 
-        expect(textLines).toContain('Display: 151 x 51');
+        expect(textLines).toContain('Display: 151 x 71');
         expect(textLines).toContain('Natural: 100 x 80');
-        expect(textLines).toContain('Image coverage: 103.88%');
+        expect(textLines).toContain('Image coverage: 74.62%');
         expect(textLines).toContain('File Size: 4.464 KB');
       });
 
@@ -300,19 +300,19 @@ describe('imageChecker', function() {
 
   describe('_getBackgroundColor', function() {
     it('should return high coverage color', function() {
-      expect(window.NCC.imageChecker._getBackgroundColor(300)).toEqual('rgba(238,88,89,0.8)');
+      expect(window.NCC.imageChecker._getBackgroundColor(300)).toEqual('red');
     });
 
     it('should return medium coverage color', function() {
-      expect(window.NCC.imageChecker._getBackgroundColor(150)).toEqual('rgba(246,158,97,0.8)');
+      expect(window.NCC.imageChecker._getBackgroundColor(150)).toEqual('orange');
     });
 
     it('should return low coverage color', function() {
-      expect(window.NCC.imageChecker._getBackgroundColor(75)).toEqual('rgba(154,193,110,0.8)');
+      expect(window.NCC.imageChecker._getBackgroundColor(75)).toEqual('green');
     });
 
     it('should return very low coverage color', function() {
-      expect(window.NCC.imageChecker._getBackgroundColor(74)).toEqual('rgba(86,179,205,0.8)');
+      expect(window.NCC.imageChecker._getBackgroundColor(74)).toEqual('blue');
     });
   });
 
@@ -363,7 +363,7 @@ describe('imageChecker', function() {
   function createMediumImg() {
     smallWidthUrlImg = document.createElement('img');
     smallWidthUrlImg.src = 'base/test/assets/placeholder-100x80.png';
-    smallWidthUrlImg.style = 'display: block; width: 151px; height: 51px;';
+    smallWidthUrlImg.style = 'display: block; width: 151px; height: 71px;';
     return smallWidthUrlImg;
   }
 
