@@ -18,12 +18,6 @@ describe('imageChecker', function() {
     images.id = 'images';
     window.document.body.append(images);
 
-    let overlays = document.querySelectorAll('.ncc-image-checker-overlay');
-    overlays = [].slice.call(overlays);
-    overlays.map(function(overlay) {
-      overlay.parentElement.removeChild(overlay);
-    });
-
     let preloaded = new Image();
     preloaded.src = 'base/test/assets/placeholder-100x80.png';
     preloaded.onload = function() {
@@ -36,14 +30,17 @@ describe('imageChecker', function() {
   afterEach(function() {
     // cleanup
     document.body.style = '';
+
     images = window.document.getElementById('images');
     if (images) {
-      let siblings = getAllSiblingsAfter(images);
-      siblings.forEach(function(sibling) {
-        sibling.remove();
-      });
       images.parentElement.removeChild(images);
     }
+
+    let overlays = document.querySelectorAll('.ncc-image-checker-overlay');
+    overlays = [].slice.call(overlays);
+    overlays.map(function(overlay) {
+      overlay.parentElement.removeChild(overlay);
+    });
   });
 
   it('should expose public api', function() {
@@ -159,22 +156,23 @@ describe('imageChecker', function() {
     });
 
     describe('cross domain images overlays', function() {
-      beforeEach(function() {
-
-      });
-
-      it('should not show file size', function(done) {
+      beforeEach(function(done) {
         createDomNodes([
           createCrossDomainImg()
         ]);
-        spyOn(window.performance, 'getEntriesByName').and.returnValue([{encodedBodySize: 0}]);
+        spyOn(window.performance, 'getEntriesByName');
         crossDomainImg.onload = function() {
-          window.NCC.imageChecker.showImagesInfo();
-
-          let textLines = getImageOverlayTextLines(0);
-          expect(textLines).toContain('File size unavailable');
           done();
         };
+      });
+
+      it('should not show file size', function() {
+        window.performance.getEntriesByName.and.returnValue([{encodedBodySize: 0}]);
+
+        window.NCC.imageChecker.showImagesInfo();
+
+        let textLines = getImageOverlayTextLines(0);
+        expect(textLines).toContain('File size unavailable');
       });
     });
   });
@@ -197,8 +195,8 @@ describe('imageChecker', function() {
 
       window.NCC.imageChecker.hideImagesInfo();
 
-      let siblings = getAllSiblingsAfter(images);
-      expect(siblings.length).toEqual(0);
+      let imageOverlays = document.querySelectorAll('.ncc-image-checker-overlay');
+      expect(imageOverlays.length).toEqual(0);
     });
   });
 
@@ -207,12 +205,27 @@ describe('imageChecker', function() {
       createDomNodes([
         createImg()
       ]);
+      expect(window.NCC.imageChecker.isImagesInfoActive()).toEqual(false);
+
       window.NCC.imageChecker.showImagesInfo();
 
       expect(window.NCC.imageChecker.isImagesInfoActive()).toEqual(true);
     });
 
-    it('should return false', function() {
+    it('should return false when hidden after shown', function() {
+      createDomNodes([
+        createImg()
+      ]);
+      window.NCC.imageChecker.showImagesInfo();
+
+      expect(window.NCC.imageChecker.isImagesInfoActive()).toEqual(true);
+
+      window.NCC.imageChecker.hideImagesInfo();
+
+      expect(window.NCC.imageChecker.isImagesInfoActive()).toEqual(false);
+    });
+
+    it('should return false when no images are found', function() {
       createDomNodes();
       window.NCC.imageChecker.showImagesInfo();
 
@@ -377,7 +390,9 @@ describe('imageChecker', function() {
 
   function createCrossDomainImg() {
     crossDomainImg = document.createElement('img');
-    crossDomainImg.src = 'https://upload.wikimedia.org/wikipedia/commons/7/73/Flag_of_Romania.svg';
+    // if it changes, find another image that we own and host
+    crossDomainImg.src = 'https://portal.siteconfidence.co.uk/common/image/ncc/ncc-logo.png';
+    crossDomainImg.style = 'display: block;width: 200px;height: 160px;';
     return crossDomainImg;
   }
 
@@ -396,17 +411,5 @@ describe('imageChecker', function() {
   function getImageOverlay(index) {
     let imageOverlays = document.querySelectorAll('.ncc-image-checker-overlay');
     return imageOverlays[index];
-  }
-
-  function getAllSiblingsAfter(element) {
-    let siblings = [];
-    let node = element;
-    while (node && node.nodeType === 1) {
-      node = node.nextElementSibling || node.nextSibling;
-      if (node) {
-        siblings.push(node);
-      }
-    }
-    return siblings;
   }
 });
