@@ -2,6 +2,12 @@
   const OVERLAY_CLASS = 'ncc-image-checker-overlay';
   const URL_CLASS = 'ncc-image-checker-url';
   const BACKGROUND_IMAGE_URL_REGEX = /url\((.*)\)/i;
+  const COLORS = {
+    red: 'red',
+    orange: 'orange',
+    green: 'green',
+    blue: 'blue'
+  };
 
   function showImagesInfo(images) {
     images = images || document.getElementsByTagName('*');
@@ -11,7 +17,7 @@
       let div = document.createElement('div');
 
       const MIN_IMAGE_CONTENT_WIDTH = 150;
-      const MIN_IMAGE_CONTENT_HEIGHT = 50;
+      const MIN_IMAGE_CONTENT_HEIGHT = 70;
       const MIN_IMAGE_URL_HEIGHT = 120;
 
       if (image.width > MIN_IMAGE_CONTENT_WIDTH && image.height > MIN_IMAGE_CONTENT_HEIGHT) {
@@ -90,7 +96,24 @@
     element.style.height = image.height + 'px';
     element.style.top = image.position.top + 'px';
     element.style.left = image.position.left + 'px';
+    element.classList.add(getBackgroundColor(getImageCoverage(image)));
     element.classList.add(OVERLAY_CLASS);
+  }
+
+  function getBackgroundColor(percentage) {
+    if (percentage >= 75 && percentage < 150) {
+      return COLORS.green;
+    }
+
+    if (percentage >= 150 && percentage < 300) {
+      return COLORS.orange;
+    }
+
+    if (percentage >= 300) {
+      return COLORS.red;
+    }
+
+    return  COLORS.blue;
   }
 
   function getImageCoverage(image) {
