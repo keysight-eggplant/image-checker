@@ -210,6 +210,7 @@
         elem = elem.offsetParent;
       } while (elem);
     }
+    location.left+=1;
     return location;
   }
 
