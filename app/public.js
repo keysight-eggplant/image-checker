@@ -2,12 +2,6 @@
   const OVERLAY_CLASS = 'ncc-image-checker-overlay';
   const URL_CLASS = 'ncc-image-checker-url';
   const BACKGROUND_IMAGE_URL_REGEX = /url\((.*)\)/i;
-  const COLORS = {
-    red: 'red',
-    orange: 'orange',
-    green: 'green',
-    blue: 'blue'
-  };
 
   /**
    * Appends an overlay with images details over the whole web page
@@ -109,24 +103,18 @@
     element.style.height = image.height + 'px';
     element.style.top = image.position.top + 'px';
     element.style.left = image.position.left + 'px';
-    element.classList.add(getBackgroundColor(getImageCoverage(image)));
+    element.style.backgroundColor = getBackgroundColor(getImageCoverage(image));
     element.classList.add(OVERLAY_CLASS);
   }
 
   function getBackgroundColor(percentage) {
-    if (percentage >= 75 && percentage < 150) {
-      return COLORS.green;
-    }
+    let col = percentage;
+    if (percentage < 0) col = 0;
+    if (percentage > 240) col = 240;
+    col = 240 - col;
+    console.log(percentage,'-',col);
+    return `hsla(${col}, 100%, 50%, .8)`;
 
-    if (percentage >= 150 && percentage < 300) {
-      return COLORS.orange;
-    }
-
-    if (percentage >= 300) {
-      return COLORS.red;
-    }
-
-    return  COLORS.blue;
   }
 
   function getImageCoverage(image) {
