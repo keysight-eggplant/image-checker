@@ -1,6 +1,7 @@
 {
   "manifest_version": 2,
   "name": "NCC Image Checker",
+  "short_name": "Image Checker",
   "description": "Provides image optimisation information within the browser.",
   "version": "1.0.0",
   "icons" : {
