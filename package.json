@@ -4,7 +4,7 @@
   "description": "Provides image optimisation information within the browser.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tabanliviu/image-checker.git"
+    "url": "git+https://github.com/nccgroup/image-checker.git"
   },
   "authors": [
     "Simon Hearne <simon@hearne.me>",
@@ -20,9 +20,9 @@
     }
   ],
   "bugs": {
-    "url": "https://github.com/tabanliviu/image-checker/issues"
+    "url": "https://github.com/nccgroup/image-checker/issues"
   },
-  "homepage": "https://github.com/tabanliviu/image-checker#readme",
+  "homepage": "https://github.com/nccgroup/image-checker#readme",
   "devDependencies": {
     "jasmine-core": "2.5.2",
     "karma": "1.6.0",
