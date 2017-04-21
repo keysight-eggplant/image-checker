@@ -44,9 +44,9 @@
         }
       } else {
         let info = `Coverage: ${ getImageCoverage(image).toFixed(2) }%`;
-
-        if (image.size && image.size > 0) {
-          info += `, File Size: ${ image.size } KB`;
+        var entry = performance.getEntriesByName(image.url)[0];
+        if (entry && entry.transferSize) {
+            info += `, File Size: ${ entry.transferSize/1000 } KB`;
         }
 
         info += `, URL: ${ image.url }`;
@@ -86,11 +86,13 @@
     optimalP.innerHTML = `Image coverage: ${ getImageCoverage(image).toFixed(2) }%`;
     div.appendChild(optimalP);
 
-    if (image.size) {
-      let sizeP = document.createElement('p');
-      sizeP.innerHTML = image.size > 0 ? `File Size: ${ image.size } KB` : `File size unavailable`;
+		var entry = performance.getEntriesByName(image.url)[0];
+    
+    if (entry && entry.transferSize) {
+		  let sizeP = document.createElement('p');
+      sizeP.innerHTML = `File Size: ${ entry.transferSize/1000 } KB`;
       div.appendChild(sizeP);
-    }
+		}
   }
 
   function appendAnchorToBody(element, image, info) {
