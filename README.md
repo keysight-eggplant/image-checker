@@ -3,7 +3,7 @@ Provides image optimisation information within the browser.
 The quality of layout for the information presented is strongly linked to markdown building techniques used.
 
 ## Install
-[Download from the Chrome Extension Store](https://github.com/tabanliviu/image-checker)
+[Download from the Chrome Extension Store](https://chrome.google.com/webstore/detail/fphiheficgnpphmjdliclanppccfgifl)
 or
 1. Clone the repo
 2. Open [Chrome Extensions](chrome://extensions)
