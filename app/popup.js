@@ -1,4 +1,6 @@
 (function() {
+  ga('send', 'pageview', '/popup.html');
+
   chrome.runtime.onMessage.addListener(function(request) {
     if (request.message === 'loaded') {
       getStartButton().style.display = 'inline-block';
@@ -36,6 +38,14 @@
     getStartButton().style.display = 'none';
     getStopButton().style.display = 'block';
     sendMessageToActiveTab({message: 'start'});
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+      ga('send', {
+        hitType: 'event',
+        eventCategory: 'imageInfo',
+        eventAction: 'show',
+        eventLabel: tabs[0].url
+      });
+    });
   }
 
   function stop() {

@@ -29,6 +29,7 @@
       "run_at": "document_idle"
     }
   ],
+  "content_security_policy": "script-src 'self' https://www.google-analytics.com; object-src 'self'",
   "permissions": ["activeTab", "tabs"],
   "minimum_chrome_version": "54.0.2840"
 }
