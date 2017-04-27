@@ -18,3 +18,4 @@ before_install:
 branches:
   only:
     - development
+    - /^\d+\.\d+(\.\d+)?(-\S*)?$/
