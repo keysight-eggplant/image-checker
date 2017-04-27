@@ -23,6 +23,9 @@
     "url": "https://github.com/nccgroup/image-checker/issues"
   },
   "homepage": "https://github.com/nccgroup/image-checker#readme",
+  "engines": {
+    "node": ">=6.10.2"
+  },
   "devDependencies": {
     "jasmine-core": "2.5.2",
     "karma": "1.6.0",
