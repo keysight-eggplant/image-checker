@@ -23,14 +23,20 @@
     "url": "https://github.com/nccgroup/image-checker/issues"
   },
   "homepage": "https://github.com/nccgroup/image-checker#readme",
+  "engines": {
+    "node": ">=6.10.2"
+  },
   "devDependencies": {
     "jasmine-core": "2.5.2",
     "karma": "1.6.0",
     "karma-chrome-launcher": "2.0.0",
     "karma-coverage": "1.1.1",
-    "karma-jasmine": "1.1.0"
+    "karma-jasmine": "1.1.0",
+    "recursive-readdir": "2.1.1",
+    "yazl": "2.4.2"
   },
   "scripts": {
-    "test": "karma start"
+    "test": "karma start",
+    "dist": "node scripts/dist.js"
   }
 }
