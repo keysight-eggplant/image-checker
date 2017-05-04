@@ -14,20 +14,11 @@
  limitations under the License.
  */
 
-.ncc-image-checker-overlay {
-  position: absolute !important;
-  z-index: 999999 !important;
-  box-sizing: border-box !important;
-  padding: 5px !important;
-  font-size:90%;
-}
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-.ncc-image-checker-overlay p, .ncc-image-checker-overlay a {
-  overflow-wrap: break-word !important;
-  word-wrap: break-word !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  font-size: 14px !important;
-  line-height: 17px !important;
-  color: #000 !important;
-}
+ga('create', 'UA-97952592-1', 'auto');
+// Removes failing protocol check. @see: http://stackoverflow.com/a/22152353/1958200
+ga('set', 'checkProtocolTask', null);

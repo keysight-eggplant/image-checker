@@ -1,4 +1,7 @@
 # NCC Image Checker - Chrome Extension
+
+[![Build Status](https://travis-ci.org/nccgroup/image-checker.svg?branch=development)](https://travis-ci.org/nccgroup/image-checker)
+
 Provides image optimisation information within the browser. 
 The quality of layout for the information presented is strongly linked to markdown building techniques used.
 
