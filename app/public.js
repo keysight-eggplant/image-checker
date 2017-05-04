@@ -36,33 +36,38 @@
       const MIN_IMAGE_CONTENT_HEIGHT = 70;
       const MIN_IMAGE_URL_HEIGHT = 120;
 
-      if (image.width > MIN_IMAGE_CONTENT_WIDTH && image.height > MIN_IMAGE_CONTENT_HEIGHT) {
-        div.setAttribute('title', image.url);
 
-        if (image.height > MIN_IMAGE_URL_HEIGHT) {
-          let url = document.createElement('a');
-          url.innerHTML = "<b>" + getName(image.url) + '</b><br>Host: ' + getHost(image.url);
-          url.setAttribute('href', image.url);
-          url.setAttribute('target', '_blank');
-          url.classList.add(URL_CLASS);
-          div.appendChild(url);
-          styleElement(div, image);
-          appendInfoToElement(div, image);
-          body.appendChild(div);
+      /* don't add overlays for zero-width images */
+      if (image.naturalSize.width > MIN_IMAGE_SIZE && image.naturalSize.height > MIN_IMAGE_SIZE) {
+        
+        if (image.width > MIN_IMAGE_CONTENT_WIDTH && image.height > MIN_IMAGE_CONTENT_HEIGHT) {
+          div.setAttribute('title', image.url);
+
+          if (image.height > MIN_IMAGE_URL_HEIGHT) {
+            let url = document.createElement('a');
+            url.innerHTML = "<b>" + getName(image.url) + '</b><br>Host: ' + getHost(image.url);
+            url.setAttribute('href', image.url);
+            url.setAttribute('target', '_blank');
+            url.classList.add(URL_CLASS);
+            div.appendChild(url);
+            styleElement(div, image);
+            appendInfoToElement(div, image);
+            body.appendChild(div);
+          } else {
+            appendInfoToElement(div, image);
+            appendAnchorToBody(div, image);
+          }
         } else {
-          appendInfoToElement(div, image);
-          appendAnchorToBody(div, image);
+          let info = `Coverage: ${ getImageScale(image).toFixed(2) }x`;
+
+          if (image.size && image.size > 0) {
+            info += `, File Size: ${ image.size } KB`;
+          }
+
+          info += `, URL: ${ image.url }`;
+
+          appendAnchorToBody(div, image, info);
         }
-      } else {
-        let info = `Coverage: ${ getImageScale(image).toFixed(2) }x`;
-
-        if (image.size && image.size > 0) {
-          info += `, File Size: ${ image.size } KB`;
-        }
-
-        info += `, URL: ${ image.url }`;
-
-        appendAnchorToBody(div, image, info);
       }
     });
   }
@@ -114,17 +119,14 @@
   }
 
   function appendAnchorToBody(element, image, info) {
-    /* don't add overlays for zero-width images */
-    if (image.width > MIN_IMAGE_SIZE && image.height > MIN_IMAGE_SIZE) {
-      let anchor = document.createElement('a');
-      let title = info ? info : element.title;
-      styleElement(anchor, image);
-      anchor.setAttribute('href', image.url);
-      anchor.setAttribute('target', '_blank');
-      anchor.setAttribute('title', title);
-      anchor.appendChild(element);
-      document.getElementsByTagName('body')[0].appendChild(anchor);
-    }
+    let anchor = document.createElement('a');
+    let title = info ? info : element.title;
+    styleElement(anchor, image);
+    anchor.setAttribute('href', image.url);
+    anchor.setAttribute('target', '_blank');
+    anchor.setAttribute('title', title);
+    anchor.appendChild(element);
+    document.getElementsByTagName('body')[0].appendChild(anchor);
   }
 
   function styleElement(element, image) {

@@ -34,3 +34,8 @@ button {
   line-height: 25px;
   font-size: 120%;
 }
+
+.popup-contact {
+  margin-top:5px;
+  text-align:right;
+}
