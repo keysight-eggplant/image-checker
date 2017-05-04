@@ -1,5 +1,13 @@
+html, body {
+  /*width: 390px;*/
+  background-color:#eee;
+  color:#111;
+  padding:3px;
+  font-family:sans-serif;
+}
 .ncc-logo {
   width: 200px;
+  
 }
 h2 {
   margin-top:0px;

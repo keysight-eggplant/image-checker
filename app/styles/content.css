@@ -3,6 +3,7 @@
   z-index: 999999 !important;
   box-sizing: border-box !important;
   padding: 5px !important;
+  font-size:90%;
 }
 
 .ncc-image-checker-overlay p, .ncc-image-checker-overlay a {
@@ -13,41 +14,4 @@
   font-size: 14px !important;
   line-height: 17px !important;
   color: #000 !important;
-}
-
-.ncc-image-checker-url {
-  font-family: Courier, 'Courier New', Book !important;
-}
-
-.red {
-  background-color: rgba(238,88,89,0.8) !important;
-}
-
-.red:hover {
-  background-color: rgb(238,88,89) !important;
-}
-
-.orange {
-  background-color: rgba(246,158,97,0.8) !important;
-}
-
-.orange:hover {
-  background-color: rgb(246,158,97) !important;
-
-}
-
-.green {
-  background-color: rgba(154,193,110,0.8) !important;
-}
-
-.green:hover {
-  background-color: rgb(154,193,110) !important;
-}
-
-.blue {
-  background-color: rgba(86,179,205,0.8) !important;
-}
-
-.blue:hover {
-  background-color: rgb(86,179,205) !important;
 }

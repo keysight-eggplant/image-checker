@@ -2,12 +2,7 @@
   const OVERLAY_CLASS = 'ncc-image-checker-overlay';
   const URL_CLASS = 'ncc-image-checker-url';
   const BACKGROUND_IMAGE_URL_REGEX = /url\((.*)\)/i;
-  const COLORS = {
-    red: 'red',
-    orange: 'orange',
-    green: 'green',
-    blue: 'blue'
-  };
+  const MIN_IMAGE_SIZE = 10;
 
   /**
    * Appends an overlay with images details over the whole web page
@@ -30,7 +25,7 @@
 
         if (image.height > MIN_IMAGE_URL_HEIGHT) {
           let url = document.createElement('a');
-          url.innerHTML = getTruncatedImageUrl(image);
+          url.innerHTML = "<b>" + getName(image.url) + '</b><br>Host: ' + getHost(image.url);
           url.setAttribute('href', image.url);
           url.setAttribute('target', '_blank');
           url.classList.add(URL_CLASS);
@@ -43,7 +38,7 @@
           appendAnchorToBody(div, image);
         }
       } else {
-        let info = `Coverage: ${ getImageCoverage(image).toFixed(2) }%`;
+        let info = `Coverage: ${ getImageScale(image).toFixed(2) }x`;
 
         if (image.size && image.size > 0) {
           info += `, File Size: ${ image.size } KB`;
@@ -83,7 +78,9 @@
     div.appendChild(naturalP);
 
     let optimalP = document.createElement('p');
-    optimalP.innerHTML = `Image coverage: ${ getImageCoverage(image).toFixed(2) }%`;
+    //optimalP.innerHTML = `Image coverage: ${ getImageCoverage(image).toFixed(2) }%`;
+    let scale = getImageScale(image).toFixed(1);
+    optimalP.innerHTML = `Image coverage: ${ scale }x`;
     div.appendChild(optimalP);
 
     if (image.size) {
@@ -91,42 +88,45 @@
       sizeP.innerHTML = image.size > 0 ? `File Size: ${ image.size } KB` : `File size unavailable`;
       div.appendChild(sizeP);
     }
+    
+    let duration = getDuration(image.url);
+    if (duration) {
+      let durationP = document.createElement('p');
+      durationP.innerHTML = duration > 0 ? `Download duration: ${ duration.toFixed(0) } ms` : `Download duration unavailable`;
+      div.appendChild(durationP);
+    }
   }
 
   function appendAnchorToBody(element, image, info) {
-    let anchor = document.createElement('a');
-    let title = info ? info : element.title;
-    styleElement(anchor, image);
-    anchor.setAttribute('href', image.url);
-    anchor.setAttribute('target', '_blank');
-    anchor.setAttribute('title', title);
-    anchor.appendChild(element);
-    document.getElementsByTagName('body')[0].appendChild(anchor);
+    /* don't add overlays for zero-width images */
+    if (image.width > MIN_IMAGE_SIZE && image.height > MIN_IMAGE_SIZE) {
+      let anchor = document.createElement('a');
+      let title = info ? info : element.title;
+      styleElement(anchor, image);
+      anchor.setAttribute('href', image.url);
+      anchor.setAttribute('target', '_blank');
+      anchor.setAttribute('title', title);
+      anchor.appendChild(element);
+      document.getElementsByTagName('body')[0].appendChild(anchor);
+    }
   }
 
   function styleElement(element, image) {
-    element.style.width = image.width + 'px';
-    element.style.height = image.height + 'px';
+    element.style.width = image.width + 1 + 'px';
+    element.style.height = image.height + 1 + 'px';
     element.style.top = image.position.top + 'px';
     element.style.left = image.position.left + 'px';
-    element.classList.add(getBackgroundColor(getImageCoverage(image)));
+    element.style.backgroundColor = getBackgroundColor(getImageCoverage(image));
+    element.style.border = '1px solid black';
     element.classList.add(OVERLAY_CLASS);
   }
 
   function getBackgroundColor(percentage) {
-    if (percentage >= 75 && percentage < 150) {
-      return COLORS.green;
-    }
-
-    if (percentage >= 150 && percentage < 300) {
-      return COLORS.orange;
-    }
-
-    if (percentage >= 300) {
-      return COLORS.red;
-    }
-
-    return  COLORS.blue;
+    let col = percentage;
+    if (percentage < 0) col = 0;
+    if (percentage > 240) col = 240;
+    col = 240 - col;
+    return `hsla(${col}, 100%, 50%, .8)`;
   }
 
   function getImageCoverage(image) {
@@ -135,19 +135,10 @@
     return (naturalArea / renderArea * 100);
   }
 
-  function getTruncatedImageUrl(image) {
-    const BOUNDING_BOX_PADDING = 10;
-    const CHARACTER_WIDTH = 10;
-    let limit = 2 * (image.width - BOUNDING_BOX_PADDING) / CHARACTER_WIDTH;
-    let replace = '...';
-    let partialLeft = Math.ceil((limit - replace.length) / 2);
-    let partialRight = Math.floor((limit - replace.length) / 2);
-    if (image.url.length > limit) {
-      return image.url.substr(0, partialLeft) + replace + image.url.substr(-partialRight);
-    }
-    else {
-      return image.url;
-    }
+  function getImageScale(image) {
+    let wid = image.naturalSize.width / image.width;
+    let hei = image.naturalSize.height / image.height;
+    return Math.max(wid,hei);
   }
 
   // this is the last point element is a DOM element
@@ -243,9 +234,17 @@
   }
 
   function getSize(element) {
-    let performanceEntry = performance.getEntriesByName(getUrl(element))[0];
+    performanceEntry = performance.getEntriesByName(getUrl(element))[0];
     if (performanceEntry) {
       return performanceEntry.encodedBodySize;
+    }
+  }
+
+  function getDuration(element) {
+    performanceEntry = performance.getEntriesByName(element)[0];
+    if (performanceEntry) {
+      console.log(performanceEntry);
+      return performanceEntry.duration;
     }
   }
 
@@ -263,6 +262,20 @@
         return url[1].replace(/["]/g, '');
       }
     }
+  }
+
+  function getName(s) {
+    let n = s.replace(/^.*[\\\/]/, '');
+    if (n.indexOf('?')>0) {
+      n = n.substr(0,n.indexOf('?'));
+    }
+    return n;
+  }
+
+  function getHost(s) {
+    let l = document.createElement('a');
+    l.href=s;
+    return l.hostname;
   }
 
   function nodeListToArray(nodeList) {
@@ -289,7 +302,6 @@
     _getImageCoverage: getImageCoverage,
     _getElementTopLeft: getElementTopLeft,
     _getAvailableImages: getAvailableImages,
-    _getTruncatedImageUrl: getTruncatedImageUrl,
     _getBackgroundColor: getBackgroundColor
   };
 }());
