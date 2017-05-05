@@ -27,9 +27,9 @@
     "node": ">=6.10.2"
   },
   "devDependencies": {
-    "jasmine-core": "2.5.2",
+    "jasmine-core": "2.6.1",
     "karma": "1.6.0",
-    "karma-chrome-launcher": "2.0.0",
+    "karma-chrome-launcher": "2.1.0",
     "karma-coverage": "1.1.1",
     "karma-jasmine": "1.1.0",
     "recursive-readdir": "2.1.1",
