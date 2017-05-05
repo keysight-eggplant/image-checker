@@ -27,6 +27,11 @@
     "node": ">=6.10.2"
   },
   "devDependencies": {
+    "eslint": "3.19.0",
+    "eslint-config-airbnb": "14.1.0",
+    "eslint-plugin-import": "2.2.0",
+    "eslint-plugin-jsx-a11y": "4.0.0",
+    "eslint-plugin-react": "6.10.3",
     "jasmine-core": "2.5.2",
     "karma": "1.6.0",
     "karma-chrome-launcher": "2.0.0",
@@ -36,7 +41,9 @@
     "yazl": "2.4.2"
   },
   "scripts": {
-    "test": "karma start",
+    "test": "karma start && npm run lint",
+    "lint": "eslint app/ test/",
+    "lint:fix": "npm run lint -- --fix",
     "dist": "node scripts/dist.js"
   }
 }

@@ -34,7 +34,7 @@
     images = images || document.getElementsByTagName('*');
     images = nodeListToArray(images);
     let body = document.getElementsByTagName('body')[0];
-    getImages(images).map(image => {
+    getImages(images).forEach(image => {
       let div = document.createElement('div');
 
       const MIN_IMAGE_CONTENT_WIDTH = 150;
@@ -59,13 +59,13 @@
           appendAnchorToBody(div, image);
         }
       } else {
-        let info = `Coverage: ${ getImageCoverage(image).toFixed(2) }%`;
+        let info = `Coverage: ${getImageCoverage(image).toFixed(2)}%`;
 
         if (image.size && image.size > 0) {
-          info += `, File Size: ${ image.size } KB`;
+          info += `, File Size: ${image.size} KB`;
         }
 
-        info += `, URL: ${ image.url }`;
+        info += `, URL: ${image.url}`;
 
         appendAnchorToBody(div, image, info);
       }
@@ -91,27 +91,27 @@
   function appendInfoToElement(div, image) {
     div.setAttribute('title', image.url);
     let renderedP = document.createElement('p');
-    renderedP.innerHTML = `Display: ${ image.width } x ${ image.height }`;
+    renderedP.innerHTML = `Display: ${image.width} x ${image.height}`;
     div.appendChild(renderedP);
 
     let naturalP = document.createElement('p');
-    naturalP.innerHTML = `Natural: ${ image.naturalSize.width } x ${ image.naturalSize.height }`;
+    naturalP.innerHTML = `Natural: ${image.naturalSize.width} x ${image.naturalSize.height}`;
     div.appendChild(naturalP);
 
     let optimalP = document.createElement('p');
-    optimalP.innerHTML = `Image coverage: ${ getImageCoverage(image).toFixed(2) }%`;
+    optimalP.innerHTML = `Image coverage: ${getImageCoverage(image).toFixed(2)}%`;
     div.appendChild(optimalP);
 
     if (image.size) {
       let sizeP = document.createElement('p');
-      sizeP.innerHTML = image.size > 0 ? `File Size: ${ image.size } KB` : `File size unavailable`;
+      sizeP.innerHTML = image.size > 0 ? `File Size: ${image.size} KB` : 'File size unavailable';
       div.appendChild(sizeP);
     }
   }
 
   function appendAnchorToBody(element, image, info) {
     let anchor = document.createElement('a');
-    let title = info ? info : element.title;
+    let title = info || element.title;
     styleElement(anchor, image);
     anchor.setAttribute('href', image.url);
     anchor.setAttribute('target', '_blank');
@@ -121,10 +121,10 @@
   }
 
   function styleElement(element, image) {
-    element.style.width = image.width + 'px';
-    element.style.height = image.height + 'px';
-    element.style.top = image.position.top + 'px';
-    element.style.left = image.position.left + 'px';
+    element.style.width = `${image.width}px`;
+    element.style.height = `${image.height}px`;
+    element.style.top = `${image.position.top}px`;
+    element.style.left = `${image.position.left}px`;
     element.classList.add(getBackgroundColor(getImageCoverage(image)));
     element.classList.add(OVERLAY_CLASS);
   }
@@ -142,26 +142,25 @@
       return COLORS.red;
     }
 
-    return  COLORS.blue;
+    return COLORS.blue;
   }
 
   function getImageCoverage(image) {
     let naturalArea = image.naturalSize.width * image.naturalSize.height;
     let renderArea = image.width * image.height;
-    return (naturalArea / renderArea * 100);
+    return (100 * (naturalArea / renderArea));
   }
 
   function getTruncatedImageUrl(image) {
     const BOUNDING_BOX_PADDING = 10;
     const CHARACTER_WIDTH = 10;
-    let limit = 2 * (image.width - BOUNDING_BOX_PADDING) / CHARACTER_WIDTH;
+    let limit = 2 * ((image.width - BOUNDING_BOX_PADDING) / CHARACTER_WIDTH);
     let replace = '...';
     let partialLeft = Math.ceil((limit - replace.length) / 2);
     let partialRight = Math.floor((limit - replace.length) / 2);
     if (image.url.length > limit) {
       return image.url.substr(0, partialLeft) + replace + image.url.substr(-partialRight);
-    }
-    else {
+    } else {
       return image.url;
     }
   }
@@ -268,11 +267,9 @@
   function getUrl(element) {
     if (element.currentSrc) {
       return element.currentSrc;
-    }
-    else if (element.src) {
+    } else if (element.src) {
       return element.src;
-    }
-    else {
+    } else {
       let bkg = window.getComputedStyle(element).backgroundImage;
       let url = BACKGROUND_IMAGE_URL_REGEX.exec(bkg);
       if (url) {
