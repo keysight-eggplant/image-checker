@@ -36,7 +36,6 @@
       const MIN_IMAGE_CONTENT_HEIGHT = 70;
       const MIN_IMAGE_URL_HEIGHT = 120;
 
-
       /* don't add overlays for zero-width images */
       if (image.naturalSize.width > MIN_IMAGE_SIZE && image.naturalSize.height > MIN_IMAGE_SIZE) {
         if (image.width > MIN_IMAGE_CONTENT_WIDTH && image.height > MIN_IMAGE_CONTENT_HEIGHT) {
@@ -139,8 +138,12 @@
 
   function getBackgroundColor(percentage) {
     let col = percentage;
-    if (percentage < 0) col = 0;
-    if (percentage > 240) col = 240;
+    if (percentage < 0) {
+      col = 0;
+    }
+    if (percentage > 240) {
+      col = 240;
+    }
     col = 240 - col;
     return `hsla(${col}, 100%, 50%, .8)`;
   }
