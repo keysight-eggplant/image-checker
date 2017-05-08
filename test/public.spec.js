@@ -249,8 +249,8 @@ describe('imageChecker', () => {
     });
   });
 
-  describe('_getElementTopLeft()', function() {
-    it('should use x y if available', function() {
+  describe('_getElementTopLeft()', () => {
+    it('should use x y if available', () => {
       createDomNodes([
         createImg()
       ]);
@@ -303,16 +303,16 @@ describe('imageChecker', () => {
     });
   });
 
-  describe('_getBackgroundColor', function() {
-    it('should return high coverage color', function() {
+  describe('_getBackgroundColor', () => {
+    it('should return high coverage color', () => {
       expect(window.NCC.imageChecker._getBackgroundColor(300)).toEqual('hsla(0, 100%, 50%, .8)');
     });
 
-    it('should return medium coverage color', function() {
+    it('should return medium coverage color', () => {
       expect(window.NCC.imageChecker._getBackgroundColor(150)).toEqual('hsla(90, 100%, 50%, .8)');
     });
 
-    it('should return low coverage color', function() {
+    it('should return low coverage color', () => {
       expect(window.NCC.imageChecker._getBackgroundColor(75)).toEqual('hsla(165, 100%, 50%, .8)');
     });
   });
