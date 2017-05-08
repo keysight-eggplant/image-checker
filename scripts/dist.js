@@ -26,15 +26,15 @@ let rootFiles = [
   'README.md'
 ];
 
-recursive('app', function(err, files) {
+recursive('app', (err, files) => {
   let zipFile = new yazl.ZipFile();
   files = files.concat(rootFiles);
-  files.forEach(function(file) {
+  files.forEach((file) => {
     zipFile.addFile(file, file);
   });
 
   console.log('zip files');
-  zipFile.entries.forEach(function(entry) {
+  zipFile.entries.forEach((entry) => {
     console.log(' ', entry.utf8FileName.toString());
   });
 
@@ -42,11 +42,11 @@ recursive('app', function(err, files) {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir);
   }
-  let outpoutPath = dir + '/image-checker-' + manifestJson.version + '.zip';
+  let outpoutPath = `${dir}/image-checker-${manifestJson.version}.zip`;
 
   zipFile.outputStream
     .pipe(fs.createWriteStream(outpoutPath))
-    .on('close', function() {
+    .on('close', () => {
       console.log('zip created');
       console.log(' ', outpoutPath);
     });

@@ -17,7 +17,7 @@
 (function() {
   ga('send', 'pageview', '/popup.html');
 
-  chrome.runtime.onMessage.addListener(function(request) {
+  chrome.runtime.onMessage.addListener((request) => {
     if (request.message === 'loaded') {
       getStartButton().style.display = 'inline-block';
       getStopButton().style.display = 'none';
@@ -30,7 +30,7 @@
   getStartButton().addEventListener('click', start, false);
   getStopButton().addEventListener('click', stop, false);
 
-  sendMessageToActiveTab({message: 'info'}, function(response) {
+  sendMessageToActiveTab({message: 'info'}, (response) => {
     if (response.message === 'inactive') {
       getStartButton().style.display = 'inline-block';
       getStopButton().style.display = 'none';
@@ -54,7 +54,7 @@
     getStartButton().style.display = 'none';
     getStopButton().style.display = 'block';
     sendMessageToActiveTab({message: 'start'});
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
       ga('send', {
         hitType: 'event',
         eventCategory: 'imageInfo',
@@ -71,7 +71,7 @@
   }
 
   function sendMessageToActiveTab(message, callback) {
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
       chrome.tabs.sendMessage(tabs[0].id, message, callback);
     });
   }
