@@ -14,7 +14,7 @@
  limitations under the License.
  */
 
-describe('imageChecker', function() {
+describe('imageChecker', () => {
   let images;
   let img;
   let bigImg;
@@ -29,7 +29,7 @@ describe('imageChecker', function() {
   let missingImg;
   let crossDomainImg;
 
-  beforeEach(function(done) {
+  beforeEach((done) => {
     images = document.createElement('div');
     images.id = 'images';
     window.document.body.append(images);
@@ -43,7 +43,7 @@ describe('imageChecker', function() {
     window.document.body.appendChild(preloaded);
   });
 
-  afterEach(function() {
+  afterEach(() => {
     // cleanup
     document.body.style = '';
 
@@ -54,12 +54,12 @@ describe('imageChecker', function() {
 
     let overlays = document.querySelectorAll('.ncc-image-checker-overlay');
     overlays = [].slice.call(overlays);
-    overlays.map(function(overlay) {
+    overlays.forEach((overlay) => {
       overlay.parentElement.removeChild(overlay);
     });
   });
 
-  it('should expose public api', function() {
+  it('should expose public api', () => {
     expect(window.NCC).toBeDefined();
     expect(window.NCC.imageChecker).toBeDefined();
     expect(window.NCC.imageChecker.showImagesInfo).toEqual(jasmine.any(Function));
@@ -67,8 +67,8 @@ describe('imageChecker', function() {
     expect(window.NCC.imageChecker.isImagesInfoActive).toEqual(jasmine.any(Function));
   });
 
-  describe('showImagesInfo()', function() {
-    it('should show image overlays only for available images', function() {
+  describe('showImagesInfo()', () => {
+    it('should show image overlays only for available images', () => {
       createDomNodes([
         createMissingImg(),
         createBackgroundImg(),
@@ -89,15 +89,15 @@ describe('imageChecker', function() {
       expect(imageOverlays.length).toEqual(5);
     });
 
-    describe('big images overlays', function() {
-      beforeEach(function() {
+    describe('big images overlays', () => {
+      beforeEach(() => {
         createDomNodes([
           createBigImg()
         ]);
         window.NCC.imageChecker.showImagesInfo();
       });
 
-      it('should show all info', function() {
+      it('should show all info', () => {
         let textLines = getImageOverlayTextLines(0);
 
         expect(textLines).toContain(jasmine.stringMatching('...holder-100x80.png'));
@@ -107,7 +107,7 @@ describe('imageChecker', function() {
         expect(textLines).toContain('File Size: 4.464 KB');
       });
 
-      it('should have url link to new tab', function() {
+      it('should have url link to new tab', () => {
         let imageOverlay = getImageOverlay(0);
         let urlLink = imageOverlay.getElementsByTagName('a')[0];
 
@@ -117,22 +117,22 @@ describe('imageChecker', function() {
       });
     });
 
-    describe('medium images overlays', function() {
-      beforeEach(function() {
+    describe('medium images overlays', () => {
+      beforeEach(() => {
         createDomNodes([
           createMediumImg()
         ]);
         window.NCC.imageChecker.showImagesInfo();
       });
 
-      it('should not show url info', function() {
+      it('should not show url info', () => {
         let imageOverlay = getImageOverlay(0);
         let urlLink = imageOverlay.getElementsByTagName('a')[0];
 
         expect(urlLink).toBeUndefined();
       });
 
-      it('should show other info', function() {
+      it('should show other info', () => {
         let textLines = getImageOverlayTextLines(0);
 
         expect(textLines).toContain('Display: 151 x 71');
@@ -141,7 +141,7 @@ describe('imageChecker', function() {
         expect(textLines).toContain('File Size: 4.464 KB');
       });
 
-      it('should click to new tab', function() {
+      it('should click to new tab', () => {
         let urlLink = getImageOverlay(0);
 
         expect(urlLink.href).toEqual(jasmine.stringMatching('test/assets/placeholder-100x80.png'));
@@ -149,15 +149,15 @@ describe('imageChecker', function() {
       });
     });
 
-    describe('small images overlays', function() {
-      beforeEach(function() {
+    describe('small images overlays', () => {
+      beforeEach(() => {
         createDomNodes([
           createSmallImg()
         ]);
         window.NCC.imageChecker.showImagesInfo();
       });
 
-      it('should only have title', function() {
+      it('should only have title', () => {
         let imageOverlay = getImageOverlay(0);
         let titleParts = imageOverlay.title.split(',');
         expect(titleParts[0].trim()).toEqual('Coverage: 1.60x');
@@ -165,14 +165,14 @@ describe('imageChecker', function() {
         expect(titleParts[2].trim()).toEqual(jasmine.stringMatching('URL: .*test/assets/placeholder-100x80.png'));
       });
 
-      it('should not have any content', function() {
+      it('should not have any content', () => {
         let textLines = getImageOverlayTextLines(0);
         expect(textLines).toEqual(['']);
       });
     });
 
-    describe('cross domain images overlays', function() {
-      beforeEach(function(done) {
+    describe('cross domain images overlays', () => {
+      beforeEach((done) => {
         createDomNodes([
           createCrossDomainImg()
         ]);
@@ -182,7 +182,7 @@ describe('imageChecker', function() {
         };
       });
 
-      it('should not show file size', function() {
+      it('should not show file size', () => {
         window.performance.getEntriesByName.and.returnValue([{encodedBodySize: 0}]);
 
         window.NCC.imageChecker.showImagesInfo();
@@ -193,8 +193,8 @@ describe('imageChecker', function() {
     });
   });
 
-  describe('hideImagesInfo()', function() {
-    it('should remove all image overlays', function() {
+  describe('hideImagesInfo()', () => {
+    it('should remove all image overlays', () => {
       createDomNodes([
         createBackgroundImg(),
         createNoBackgroundImg(),
@@ -216,8 +216,8 @@ describe('imageChecker', function() {
     });
   });
 
-  describe('isImagesInfoActive()', function() {
-    it('should return true', function() {
+  describe('isImagesInfoActive()', () => {
+    it('should return true', () => {
       createDomNodes([
         createImg()
       ]);
@@ -228,7 +228,7 @@ describe('imageChecker', function() {
       expect(window.NCC.imageChecker.isImagesInfoActive()).toEqual(true);
     });
 
-    it('should return false when hidden after shown', function() {
+    it('should return false when hidden after shown', () => {
       createDomNodes([
         createImg()
       ]);
@@ -241,7 +241,7 @@ describe('imageChecker', function() {
       expect(window.NCC.imageChecker.isImagesInfoActive()).toEqual(false);
     });
 
-    it('should return false when no images are found', function() {
+    it('should return false when no images are found', () => {
       createDomNodes();
       window.NCC.imageChecker.showImagesInfo();
 
@@ -259,7 +259,7 @@ describe('imageChecker', function() {
       expect(window.NCC.imageChecker._getElementTopLeft(img)).toEqual({top: 4, left: 4});
     });
 
-    it('should use parent offset as fallback', function() {
+    it('should use parent offset as fallback', () => {
       createDomNodes([
         createBackgroundImg()
       ]);
@@ -269,8 +269,8 @@ describe('imageChecker', function() {
     });
   });
 
-  describe('_getImageCoverage()', function() {
-    it('should calculate natural size percentage of rendered size', function() {
+  describe('_getImageCoverage()', () => {
+    it('should calculate natural size percentage of rendered size', () => {
       expect(window.NCC.imageChecker._getImageCoverage({
         naturalSize: {
           width: 200,
@@ -282,8 +282,8 @@ describe('imageChecker', function() {
     });
   });
 
-  describe('_getNaturalSize()', function() {
-    it('should use natural size if available', function() {
+  describe('_getNaturalSize()', () => {
+    it('should use natural size if available', () => {
       createDomNodes([
         createImg()
       ]);
@@ -291,12 +291,15 @@ describe('imageChecker', function() {
       expect(window.NCC.imageChecker._getNaturalSize(img)).toEqual({width: 100, height: 80});
     });
 
-    it('should use image natural size as fallback', function() {
+    it('should use image natural size as fallback', () => {
       createDomNodes([
         createBackgroundImg()
       ]);
 
-      expect(window.NCC.imageChecker._getNaturalSize(backgroundImg)).toEqual({width: 100, height: 80});
+      expect(window.NCC.imageChecker._getNaturalSize(backgroundImg)).toEqual({
+        width: 100,
+        height: 80
+      });
     });
   });
 
@@ -394,7 +397,7 @@ describe('imageChecker', function() {
 
   function createDomNodes(domNodes) {
     domNodes = domNodes || [];
-    domNodes.forEach(function(domNode) {
+    domNodes.forEach((domNode) => {
       images.appendChild(domNode);
     });
   }

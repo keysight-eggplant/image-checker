@@ -29,7 +29,7 @@
     images = images || document.getElementsByTagName('*');
     images = nodeListToArray(images);
     let body = document.getElementsByTagName('body')[0];
-    getImages(images).map(image => {
+    getImages(images).forEach(image => {
       let div = document.createElement('div');
 
       const MIN_IMAGE_CONTENT_WIDTH = 150;
@@ -39,7 +39,7 @@
 
       /* don't add overlays for zero-width images */
       if (image.naturalSize.width > MIN_IMAGE_SIZE && image.naturalSize.height > MIN_IMAGE_SIZE) {
-        
+
         if (image.width > MIN_IMAGE_CONTENT_WIDTH && image.height > MIN_IMAGE_CONTENT_HEIGHT) {
           div.setAttribute('title', image.url);
 
@@ -91,11 +91,11 @@
   function appendInfoToElement(div, image) {
     div.setAttribute('title', image.url);
     let renderedP = document.createElement('p');
-    renderedP.innerHTML = `Display: ${ image.width } x ${ image.height }`;
+    renderedP.innerHTML = `Display: ${image.width} x ${image.height}`;
     div.appendChild(renderedP);
 
     let naturalP = document.createElement('p');
-    naturalP.innerHTML = `Natural: ${ image.naturalSize.width } x ${ image.naturalSize.height }`;
+    naturalP.innerHTML = `Natural: ${image.naturalSize.width} x ${image.naturalSize.height}`;
     div.appendChild(naturalP);
 
     let optimalP = document.createElement('p');
@@ -106,10 +106,10 @@
 
     if (image.size) {
       let sizeP = document.createElement('p');
-      sizeP.innerHTML = image.size > 0 ? `File Size: ${ image.size } KB` : `File size unavailable`;
+      sizeP.innerHTML = image.size > 0 ? `File Size: ${image.size} KB` : 'File size unavailable';
       div.appendChild(sizeP);
     }
-    
+
     let duration = getDuration(image.url);
     if (duration) {
       let durationP = document.createElement('p');
@@ -120,7 +120,7 @@
 
   function appendAnchorToBody(element, image, info) {
     let anchor = document.createElement('a');
-    let title = info ? info : element.title;
+    let title = info || element.title;
     styleElement(anchor, image);
     anchor.setAttribute('href', image.url);
     anchor.setAttribute('target', '_blank');
@@ -150,7 +150,7 @@
   function getImageCoverage(image) {
     let naturalArea = image.naturalSize.width * image.naturalSize.height;
     let renderArea = image.width * image.height;
-    return (naturalArea / renderArea * 100);
+    return (100 * (naturalArea / renderArea));
   }
 
   function getImageScale(image) {
@@ -259,7 +259,7 @@
   }
 
   function getDuration(element) {
-    performanceEntry = performance.getEntriesByName(element)[0];
+    let performanceEntry = performance.getEntriesByName(element)[0];
     if (performanceEntry) {
       console.log(performanceEntry);
       return performanceEntry.duration;
@@ -269,11 +269,9 @@
   function getUrl(element) {
     if (element.currentSrc) {
       return element.currentSrc;
-    }
-    else if (element.src) {
+    } else if (element.src) {
       return element.src;
-    }
-    else {
+    } else {
       let bkg = window.getComputedStyle(element).backgroundImage;
       let url = BACKGROUND_IMAGE_URL_REGEX.exec(bkg);
       if (url) {

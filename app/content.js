@@ -24,9 +24,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 
   if (request.message === 'info') {
-    window.NCC.imageChecker.isImagesInfoActive()
-      ? sendResponse({message: 'active'})
-      : sendResponse({message: 'inactive'});
+    if (window.NCC.imageChecker.isImagesInfoActive()) {
+      sendResponse({message: 'active'});
+    } else {
+      sendResponse({message: 'inactive'});
+    }
   }
 });
 
