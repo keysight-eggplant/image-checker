@@ -103,7 +103,7 @@ describe('imageChecker', () => {
         expect(textLines).toContain(jasmine.stringMatching('...holder-100x80.png'));
         expect(textLines).toContain('Display: 200 x 160');
         expect(textLines).toContain('Natural: 100 x 80');
-        expect(textLines).toContain('Image coverage: 25.00%');
+        expect(textLines).toContain('Image coverage: 0.5x');
         expect(textLines).toContain('File Size: 4.464 KB');
       });
 
@@ -137,7 +137,7 @@ describe('imageChecker', () => {
 
         expect(textLines).toContain('Display: 151 x 71');
         expect(textLines).toContain('Natural: 100 x 80');
-        expect(textLines).toContain('Image coverage: 74.62%');
+        expect(textLines).toContain('Image coverage: 1.1x');
         expect(textLines).toContain('File Size: 4.464 KB');
       });
 
@@ -160,7 +160,7 @@ describe('imageChecker', () => {
       it('should only have title', () => {
         let imageOverlay = getImageOverlay(0);
         let titleParts = imageOverlay.title.split(',');
-        expect(titleParts[0].trim()).toEqual('Coverage: 106.67%');
+        expect(titleParts[0].trim()).toEqual('Coverage: 1.60x');
         expect(titleParts[1].trim()).toEqual('File Size: 4.464 KB');
         expect(titleParts[2].trim()).toEqual(jasmine.stringMatching('URL: .*test/assets/placeholder-100x80.png'));
       });
@@ -249,22 +249,6 @@ describe('imageChecker', () => {
     });
   });
 
-  describe('_getTruncatedImageUrl()', () => {
-    it('should truncate url that does not fit bounding box', () => {
-      expect(window.NCC.imageChecker._getTruncatedImageUrl({
-        width: 50,
-        url: '1234567890'
-      })).toEqual('123...90');
-    });
-
-    it('should not truncate url that does fit bounding box', () => {
-      expect(window.NCC.imageChecker._getTruncatedImageUrl({
-        width: 50,
-        url: '12345678'
-      })).toEqual('12345678');
-    });
-  });
-
   describe('_getElementTopLeft()', () => {
     it('should use x y if available', () => {
       createDomNodes([
@@ -321,19 +305,15 @@ describe('imageChecker', () => {
 
   describe('_getBackgroundColor', () => {
     it('should return high coverage color', () => {
-      expect(window.NCC.imageChecker._getBackgroundColor(300)).toEqual('red');
+      expect(window.NCC.imageChecker._getBackgroundColor(300)).toEqual('hsla(0, 100%, 50%, .8)');
     });
 
     it('should return medium coverage color', () => {
-      expect(window.NCC.imageChecker._getBackgroundColor(150)).toEqual('orange');
+      expect(window.NCC.imageChecker._getBackgroundColor(150)).toEqual('hsla(90, 100%, 50%, .8)');
     });
 
     it('should return low coverage color', () => {
-      expect(window.NCC.imageChecker._getBackgroundColor(75)).toEqual('green');
-    });
-
-    it('should return very low coverage color', () => {
-      expect(window.NCC.imageChecker._getBackgroundColor(74)).toEqual('blue');
+      expect(window.NCC.imageChecker._getBackgroundColor(75)).toEqual('hsla(165, 100%, 50%, .8)');
     });
   });
 

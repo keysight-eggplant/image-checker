@@ -8,6 +8,10 @@
     "chrome": true
   },
   "rules": {
+    "curly": [
+      "error",
+      "all"
+    ],
     "func-names": "off",
     "space-before-function-paren": "off",
     "comma-dangle": "off",
