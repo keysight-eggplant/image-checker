@@ -1,0 +1,30 @@
+{
+  "extends": "airbnb-base",
+  "env": {
+    "browser": true
+  },
+  "globals": {
+    "ga": true,
+    "chrome": true
+  },
+  "rules": {
+    "curly": [
+      "error",
+      "all"
+    ],
+    "func-names": "off",
+    "space-before-function-paren": "off",
+    "comma-dangle": "off",
+    "no-param-reassign": "off",
+    "no-use-before-define": "off",
+    "prefer-const": "off",
+    "arrow-parens": "off",
+    "object-shorthand": "off",
+    "no-else-return": "off",
+    "consistent-return": "off",
+    "object-curly-spacing": [
+      "error",
+      "never"
+    ]
+  }
+}
