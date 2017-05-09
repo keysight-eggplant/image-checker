@@ -19,7 +19,7 @@
   z-index: 999999 !important;
   box-sizing: border-box !important;
   padding: 5px !important;
-  font-size:90%;
+  font-size: 90% !important;
 }
 
 .ncc-image-checker-overlay p, .ncc-image-checker-overlay a {

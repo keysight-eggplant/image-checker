@@ -15,11 +15,10 @@
  */
 
 html, body {
-  /*width: 390px;*/
-  background-color:#eee;
-  color:#111;
-  padding:3px;
-  font-family:sans-serif;
+  background-color: #eee;
+  color: #111;
+  padding: 3px;
+  font-family: sans-serif;
 }
 
 .ncc-logo {
@@ -27,15 +26,15 @@ html, body {
   
 }
 h2 {
-  margin-top:0px;
+  margin-top: 0px;
 }
-button {
+.popup-btn {
   width: 100%;
   line-height: 25px;
   font-size: 120%;
 }
 
 .popup-contact {
-  margin-top:5px;
-  text-align:right;
+  margin-top: 5px;
+  text-align: right;
 }

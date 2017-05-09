@@ -36,8 +36,6 @@
       const MIN_IMAGE_CONTENT_HEIGHT = 70;
       const MIN_IMAGE_URL_HEIGHT = 120;
 
-
-      /* don't add overlays for zero-width images */
       if (image.naturalSize.width > MIN_IMAGE_SIZE && image.naturalSize.height > MIN_IMAGE_SIZE) {
         
         if (image.width > MIN_IMAGE_CONTENT_WIDTH && image.height > MIN_IMAGE_CONTENT_HEIGHT) {
@@ -141,8 +139,12 @@
 
   function getBackgroundColor(percentage) {
     let col = percentage;
-    if (percentage < 0) col = 0;
-    if (percentage > 240) col = 240;
+    if (percentage < 0) {
+      col = 0;
+    }
+    if (percentage > 240) {
+      col = 240;
+    }
     col = 240 - col;
     return `hsla(${col}, 100%, 50%, .8)`;
   }
@@ -154,9 +156,9 @@
   }
 
   function getImageScale(image) {
-    let wid = image.naturalSize.width / image.width;
-    let hei = image.naturalSize.height / image.height;
-    return Math.max(wid,hei);
+    let widthRatio = image.naturalSize.width / image.width;
+    let heightRatio = image.naturalSize.height / image.height;
+    return Math.max(widthRatio, heightRatio);
   }
 
   // this is the last point element is a DOM element
@@ -252,17 +254,16 @@
   }
 
   function getSize(element) {
-    performanceEntry = performance.getEntriesByName(getUrl(element))[0];
-    if (performanceEntry) {
-      return performanceEntry.encodedBodySize;
+    let performanceEntrySize = performance.getEntriesByName(getUrl(element))[0];
+    if (performanceEntrySize) {
+      return performanceEntrySize.encodedBodySize;
     }
   }
 
   function getDuration(element) {
-    performanceEntry = performance.getEntriesByName(element)[0];
-    if (performanceEntry) {
-      console.log(performanceEntry);
-      return performanceEntry.duration;
+    let performanceEntryDuration = performance.getEntriesByName(element)[0];
+    if (performanceEntryDuration) {
+      return performanceEntryDuration.duration;
     }
   }
 
@@ -291,9 +292,8 @@
   }
 
   function getHost(s) {
-    let l = document.createElement('a');
-    l.href=s;
-    return l.hostname;
+    let url = new URL(s)
+    return url.hostname;
   }
 
   function nodeListToArray(nodeList) {
