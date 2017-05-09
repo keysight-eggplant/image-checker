@@ -288,7 +288,7 @@
   }
 
   function getHost(s) {
-    let url = new URL(s)
+    let url = new URL(s);
     return url.hostname;
   }
 
