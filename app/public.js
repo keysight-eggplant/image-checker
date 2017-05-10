@@ -30,13 +30,14 @@
     images = nodeListToArray(images);
     let body = document.getElementsByTagName('body')[0];
     getImages(images).forEach(image => {
-
       const MIN_IMAGE_CONTENT_WIDTH = 150;
       const MIN_IMAGE_CONTENT_HEIGHT = 70;
       const MIN_IMAGE_URL_HEIGHT = 120;
 
-      if (!isSVG(image) && image.naturalSize.width > MIN_IMAGE_SIZE && image.naturalSize.height > MIN_IMAGE_SIZE) {
-        let div = document.createElement('div');  
+      if (!isSVG(image) &&
+image.naturalSize.width > MIN_IMAGE_SIZE &&
+image.naturalSize.height > MIN_IMAGE_SIZE) {
+        let div = document.createElement('div');
         if (image.width > MIN_IMAGE_CONTENT_WIDTH && image.height > MIN_IMAGE_CONTENT_HEIGHT) {
           div.setAttribute('title', image.url);
 
