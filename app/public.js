@@ -294,12 +294,7 @@
   }
 
   function isSVG(s) {
-    let hasSVG = s.url.indexOf('svg');
-    if (hasSVG > -1) {
-      return true;
-    } else {
-      return false;
-    }
+    return /\.svg$/i.test(s.url);
   }
 
   function nodeListToArray(nodeList) {
