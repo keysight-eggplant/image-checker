@@ -8,6 +8,10 @@
     "chrome": true
   },
   "rules": {
+    "max-len": [
+      "error",
+      120
+    ],
     "curly": [
       "error",
       "all"
