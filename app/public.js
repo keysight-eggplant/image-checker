@@ -18,6 +18,7 @@
   const OVERLAY_CLASS = 'ncc-image-checker-overlay';
   const URL_CLASS = 'ncc-image-checker-url';
   const BACKGROUND_IMAGE_URL_REGEX = /url\((.*)\)/i;
+  const SVG_URL_REGEX = /\.svg$/i;
   const MIN_IMAGE_SIZE = 10;
 
   /**
@@ -110,7 +111,9 @@
     let duration = getDuration(image.url);
     if (duration) {
       let durationP = document.createElement('p');
-      durationP.innerHTML = duration > 0 ? `Download duration: ${duration.toFixed(0)} ms` : 'Download duration unavailable';
+      durationP.innerHTML = duration > 0
+        ? `Download duration: ${duration.toFixed(0)} ms`
+        : 'Download duration unavailable';
       div.appendChild(durationP);
     }
   }
@@ -281,11 +284,11 @@
   }
 
   function getName(s) {
-    let n = s.replace(/^.*[\\/]/, '');
-    if (n.indexOf('?') > 0) {
-      n = n.substr(0, n.indexOf('?'));
+    s = s.replace(/^.*[\\/]/, '');
+    if (s.indexOf('?') > 0) {
+      s = s.substr(0, s.indexOf('?'));
     }
-    return n;
+    return s;
   }
 
   function getHost(s) {
@@ -294,7 +297,7 @@
   }
 
   function isSVG(s) {
-    return /\.svg$/i.test(s.url);
+    return SVG_URL_REGEX.test(s.url);
   }
 
   function nodeListToArray(nodeList) {
