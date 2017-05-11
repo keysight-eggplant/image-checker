@@ -28,6 +28,7 @@ describe('imageChecker', () => {
   let smallWidthUrlImg;
   let missingImg;
   let crossDomainImg;
+  let svgImg;
 
   beforeEach((done) => {
     images = document.createElement('div');
@@ -87,6 +88,19 @@ describe('imageChecker', () => {
 
       let imageOverlays = document.querySelectorAll('.ncc-image-checker-overlay');
       expect(imageOverlays.length).toEqual(5);
+    });
+
+    it('should ignore query parameters', () => {
+      bigImg = createBigImg();
+      bigImg.src += '?mock=true';
+      createDomNodes([
+        bigImg
+      ]);
+      window.NCC.imageChecker.showImagesInfo();
+
+      let textLines = getImageOverlayTextLines(0);
+
+      expect(textLines).not.toContain(jasmine.stringMatching(/\?mock=true/));
     });
 
     describe('big images overlays', () => {
@@ -189,6 +203,24 @@ describe('imageChecker', () => {
 
         let textLines = getImageOverlayTextLines(0);
         expect(textLines).toContain('File size unavailable');
+      });
+    });
+
+    describe('svg image overlays', () => {
+      beforeEach((done) => {
+        createDomNodes([
+          createSvgImg()
+        ]);
+        svgImg.onload = function() {
+          done();
+        };
+      });
+
+      it('should not show any overlay', () => {
+        window.NCC.imageChecker.showImagesInfo();
+
+        let imageOverlay = getImageOverlay(0);
+        expect(imageOverlay).toBeUndefined();
       });
     });
   });
@@ -315,11 +347,16 @@ describe('imageChecker', () => {
     it('should return low coverage color', () => {
       expect(window.NCC.imageChecker._getBackgroundColor(75)).toEqual('hsla(165, 100%, 50%, .8)');
     });
+
+    it('should return low coverage color for negative percentage', () => {
+      expect(window.NCC.imageChecker._getBackgroundColor(-1)).toEqual('hsla(240, 100%, 50%, .8)');
+    });
   });
 
   function createBackgroundImg() {
     backgroundImg = document.createElement('div');
-    backgroundImg.style = 'display: block;width: 200px;height: 160px; background: url("base/test/assets/placeholder-100x80.png");';
+    backgroundImg.style = 'display: block;width: 200px;height: 160px;' +
+      'background: url("base/test/assets/placeholder-100x80.png");';
     return backgroundImg;
   }
 
@@ -393,6 +430,13 @@ describe('imageChecker', () => {
     crossDomainImg.src = 'https://portal.siteconfidence.co.uk/common/image/ncc/ncc-logo.png';
     crossDomainImg.style = 'display: block;width: 200px;height: 160px;';
     return crossDomainImg;
+  }
+
+  function createSvgImg() {
+    svgImg = document.createElement('img');
+    svgImg.src = 'base/test/assets/placeholder-100x80.svg';
+    svgImg.style = 'display: block;width: 200px;height: 160px;';
+    return svgImg;
   }
 
   function createDomNodes(domNodes) {
