@@ -91,10 +91,8 @@ describe('imageChecker', () => {
     });
 
     it('should ignore query parameters', () => {
-      bigImg = createBigImg();
-      bigImg.src += '?mock=true';
       createDomNodes([
-        bigImg
+        createBigImg({queryParams: 'mock=true'})
       ]);
       window.NCC.imageChecker.showImagesInfo();
 
@@ -409,9 +407,13 @@ describe('imageChecker', () => {
     return img;
   }
 
-  function createBigImg() {
+  function createBigImg(options) {
+    options = options || {};
     bigImg = document.createElement('img');
     bigImg.src = 'base/test/assets/placeholder-100x80.png';
+    if (options.queryParams) {
+      bigImg.src += `?${options.queryParams}`;
+    }
     bigImg.style = 'display: block;width: 200px;height: 160px;';
     return bigImg;
   }
