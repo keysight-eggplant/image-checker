@@ -207,21 +207,18 @@ describe('imageChecker', () => {
     });
 
     describe('svg image overlays', () => {
-      beforeEach((done) => {
+      beforeEach(() => {
         createDomNodes([
           createSvgImg(),
-          createSvgImg({dataUri: true})
+          createSvgImg({dataUri: true}),
+          createSvgImg({queryParams: 'mock=true'})
         ]);
-        svgImg.onload = function() {
-          done();
-        };
       });
 
       it('should not show any overlay', () => {
         window.NCC.imageChecker.showImagesInfo();
 
-        let imageOverlay = getImageOverlay(0);
-        expect(imageOverlay).toBeUndefined();
+        expect(getImageOverlays().length).toEqual(0);
       });
     });
   });
@@ -445,6 +442,9 @@ describe('imageChecker', () => {
     } else {
       svgImg.src = 'base/test/assets/placeholder-100x80.svg';
     }
+    if (options.queryParams) {
+      svgImg.src += `?${options.queryParams}`;
+    }
     svgImg.style = 'display: block;width: 200px;height: 160px;';
     return svgImg;
   }
@@ -462,7 +462,11 @@ describe('imageChecker', () => {
   }
 
   function getImageOverlay(index) {
-    let imageOverlays = document.querySelectorAll('.ncc-image-checker-overlay');
+    let imageOverlays = getImageOverlays();
     return imageOverlays[index];
+  }
+
+  function getImageOverlays() {
+    return document.querySelectorAll('.ncc-image-checker-overlay');
   }
 });

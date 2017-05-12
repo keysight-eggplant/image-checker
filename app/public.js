@@ -18,7 +18,7 @@
   const OVERLAY_CLASS = 'ncc-image-checker-overlay';
   const URL_CLASS = 'ncc-image-checker-url';
   const BACKGROUND_IMAGE_URL_REGEX = /url\((.*)\)/i;
-  const SVG_URL_REGEX = /\.svg$/i;
+  const SVG_URL_REGEX = /\.svg/i;
   const SVG_DATA_URI_REGEX = /^data:.*\/svg/i;
   const MIN_IMAGE_SIZE = 10;
 
