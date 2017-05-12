@@ -209,7 +209,8 @@ describe('imageChecker', () => {
     describe('svg image overlays', () => {
       beforeEach((done) => {
         createDomNodes([
-          createSvgImg()
+          createSvgImg(),
+          createSvgImg({dataUri: true})
         ]);
         svgImg.onload = function() {
           done();
@@ -432,9 +433,18 @@ describe('imageChecker', () => {
     return crossDomainImg;
   }
 
-  function createSvgImg() {
+  function createSvgImg(options) {
+    options = options || {};
     svgImg = document.createElement('img');
-    svgImg.src = 'base/test/assets/placeholder-100x80.svg';
+    if (options.dataUri) {
+      svgImg.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjgwIiB4bWxucz0iaHR0cDovL3d3dy53My' +
+        '5vcmcvMjAwMC9zdmciPgogICAgPHJlY3QgeD0iMiIgeT0iMiIgd2lkdGg9Ijk2IiBoZWlnaHQ9Ijc2IiBzdHlsZT0iZmlsbDojREVER' +
+        'URFO3N0cm9rZTojNTU1NTU1O3N0cm9rZS13aWR0aDoyIi8+CiAgICA8dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1zaXplPSIxOCIg' +
+        'dGV4dC1hbmNob3I9Im1pZGRsZSIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiCiAgICAgICAgICBmb250LWZhbWlseT0ibW9ub3N' +
+        'wYWNlLCBzYW5zLXNlcmlmIiBmaWxsPSIjNTU1NTU1Ij4xMDAmIzIxNTs4MAogICAgPC90ZXh0Pgo8L3N2Zz4K';
+    } else {
+      svgImg.src = 'base/test/assets/placeholder-100x80.svg';
+    }
     svgImg.style = 'display: block;width: 200px;height: 160px;';
     return svgImg;
   }
