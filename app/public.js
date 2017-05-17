@@ -18,6 +18,8 @@
   const OVERLAY_CLASS = 'ncc-image-checker-overlay';
   const URL_CLASS = 'ncc-image-checker-url';
   const BACKGROUND_IMAGE_URL_REGEX = /url\((.*)\)/i;
+  const SVG_URL_REGEX = /\.svg/i;
+  const SVG_DATA_URI_REGEX = /^data:.*\/svg/i;
   const MIN_IMAGE_SIZE = 10;
 
   /**
@@ -30,13 +32,14 @@
     images = nodeListToArray(images);
     let body = document.getElementsByTagName('body')[0];
     getImages(images).forEach(image => {
-      let div = document.createElement('div');
-
       const MIN_IMAGE_CONTENT_WIDTH = 150;
       const MIN_IMAGE_CONTENT_HEIGHT = 70;
       const MIN_IMAGE_URL_HEIGHT = 120;
 
-      if (image.naturalSize.width > MIN_IMAGE_SIZE && image.naturalSize.height > MIN_IMAGE_SIZE) {
+      if (!isSVG(image) &&
+        image.naturalSize.width > MIN_IMAGE_SIZE &&
+        image.naturalSize.height > MIN_IMAGE_SIZE) {
+        let div = document.createElement('div');
         if (image.width > MIN_IMAGE_CONTENT_WIDTH && image.height > MIN_IMAGE_CONTENT_HEIGHT) {
           div.setAttribute('title', image.url);
 
@@ -109,7 +112,9 @@
     let duration = getDuration(image.url);
     if (duration) {
       let durationP = document.createElement('p');
-      durationP.innerHTML = duration > 0 ? `Download duration: ${duration.toFixed(0)} ms` : 'Download duration unavailable';
+      durationP.innerHTML = duration > 0
+        ? `Download duration: ${duration.toFixed(0)} ms`
+        : 'Download duration unavailable';
       div.appendChild(durationP);
     }
   }
@@ -280,16 +285,20 @@
   }
 
   function getName(s) {
-    let n = s.replace(/^.*[\\/]/, '');
-    if (n.indexOf('?') > 0) {
-      n = n.substr(0, n.indexOf('?'));
+    s = s.replace(/^.*[\\/]/, '');
+    if (s.indexOf('?') > 0) {
+      s = s.substr(0, s.indexOf('?'));
     }
-    return n;
+    return s;
   }
 
   function getHost(s) {
     let url = new URL(s);
     return url.hostname;
+  }
+
+  function isSVG(s) {
+    return SVG_URL_REGEX.test(s.url) || SVG_DATA_URI_REGEX.test(s.url);
   }
 
   function nodeListToArray(nodeList) {

@@ -28,6 +28,7 @@ describe('imageChecker', () => {
   let smallWidthUrlImg;
   let missingImg;
   let crossDomainImg;
+  let svgImg;
 
   beforeEach((done) => {
     images = document.createElement('div');
@@ -87,6 +88,17 @@ describe('imageChecker', () => {
 
       let imageOverlays = document.querySelectorAll('.ncc-image-checker-overlay');
       expect(imageOverlays.length).toEqual(5);
+    });
+
+    it('should ignore query parameters', () => {
+      createDomNodes([
+        createBigImg({queryParams: 'mock=true'})
+      ]);
+      window.NCC.imageChecker.showImagesInfo();
+
+      let textLines = getImageOverlayTextLines(0);
+
+      expect(textLines).not.toContain(jasmine.stringMatching(/\?mock=true/));
     });
 
     describe('big images overlays', () => {
@@ -189,6 +201,22 @@ describe('imageChecker', () => {
 
         let textLines = getImageOverlayTextLines(0);
         expect(textLines).toContain('File size unavailable');
+      });
+    });
+
+    describe('svg image overlays', () => {
+      beforeEach(() => {
+        createDomNodes([
+          createSvgImg(),
+          createSvgImg({dataUri: true}),
+          createSvgImg({queryParams: 'mock=true'})
+        ]);
+      });
+
+      it('should not show any overlay', () => {
+        window.NCC.imageChecker.showImagesInfo();
+
+        expect(getImageOverlays().length).toEqual(0);
       });
     });
   });
@@ -315,11 +343,16 @@ describe('imageChecker', () => {
     it('should return low coverage color', () => {
       expect(window.NCC.imageChecker._getBackgroundColor(75)).toEqual('hsla(165, 100%, 50%, .8)');
     });
+
+    it('should return low coverage color for negative percentage', () => {
+      expect(window.NCC.imageChecker._getBackgroundColor(-1)).toEqual('hsla(240, 100%, 50%, .8)');
+    });
   });
 
   function createBackgroundImg() {
     backgroundImg = document.createElement('div');
-    backgroundImg.style = 'display: block;width: 200px;height: 160px; background: url("base/test/assets/placeholder-100x80.png");';
+    backgroundImg.style = 'display: block;width: 200px;height: 160px;' +
+      'background: url("base/test/assets/placeholder-100x80.png");';
     return backgroundImg;
   }
 
@@ -374,9 +407,13 @@ describe('imageChecker', () => {
     return img;
   }
 
-  function createBigImg() {
+  function createBigImg(options) {
+    options = options || {};
     bigImg = document.createElement('img');
     bigImg.src = 'base/test/assets/placeholder-100x80.png';
+    if (options.queryParams) {
+      bigImg.src += `?${options.queryParams}`;
+    }
     bigImg.style = 'display: block;width: 200px;height: 160px;';
     return bigImg;
   }
@@ -395,6 +432,25 @@ describe('imageChecker', () => {
     return crossDomainImg;
   }
 
+  function createSvgImg(options) {
+    options = options || {};
+    svgImg = document.createElement('img');
+    if (options.dataUri) {
+      svgImg.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjgwIiB4bWxucz0iaHR0cDovL3d3dy53My' +
+        '5vcmcvMjAwMC9zdmciPgogICAgPHJlY3QgeD0iMiIgeT0iMiIgd2lkdGg9Ijk2IiBoZWlnaHQ9Ijc2IiBzdHlsZT0iZmlsbDojREVER' +
+        'URFO3N0cm9rZTojNTU1NTU1O3N0cm9rZS13aWR0aDoyIi8+CiAgICA8dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1zaXplPSIxOCIg' +
+        'dGV4dC1hbmNob3I9Im1pZGRsZSIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiCiAgICAgICAgICBmb250LWZhbWlseT0ibW9ub3N' +
+        'wYWNlLCBzYW5zLXNlcmlmIiBmaWxsPSIjNTU1NTU1Ij4xMDAmIzIxNTs4MAogICAgPC90ZXh0Pgo8L3N2Zz4K';
+    } else {
+      svgImg.src = 'base/test/assets/placeholder-100x80.svg';
+    }
+    if (options.queryParams) {
+      svgImg.src += `?${options.queryParams}`;
+    }
+    svgImg.style = 'display: block;width: 200px;height: 160px;';
+    return svgImg;
+  }
+
   function createDomNodes(domNodes) {
     domNodes = domNodes || [];
     domNodes.forEach((domNode) => {
@@ -408,7 +464,11 @@ describe('imageChecker', () => {
   }
 
   function getImageOverlay(index) {
-    let imageOverlays = document.querySelectorAll('.ncc-image-checker-overlay');
+    let imageOverlays = getImageOverlays();
     return imageOverlays[index];
+  }
+
+  function getImageOverlays() {
+    return document.querySelectorAll('.ncc-image-checker-overlay');
   }
 });
