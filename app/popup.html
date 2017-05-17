@@ -23,17 +23,19 @@
 </head>
 <body>
   <div class="popup-container">
-    <div class="popup-top">
+    <div class="popup-section popup-top">
       <div class="popup-top-logo">
         <img src="assets/logo.png" class="ncc-logo">
       </div>
     </div>
-    <div class="popup-mid">
+
+    <div class="popup-section popup-mid">
       <h3>Image efficiency checker</h3>
       <p>Sending images that are too big can slow your site down. This tool scans a whole page to identify all images and highlights those that are sent at the wrong size.</p>
       <p>Images are coloured by their relative scale as shown in the legend below.</p>
     </div>
-    <div class="popup-colourscale">
+
+    <div class="popup-section popup-colourscale">
       <table class="popup-colourscale-text">
         <tr>
           <td>too big</td>
@@ -43,14 +45,17 @@
       </table>
       <div class="popup-colourscale-scale"></div>
     </div>
-    <div class="popup-bottom">
+
+    <div class="popup-section popup-bottom">
       <button class="popup-btn" id="start">Start</button>
       <button class="popup-btn" id="stop">Remove Overlay</button>
     </div>
-    <div class="popup-contact">
+
+    <div class="popup-section popup-contact">
       <a target="_blank" href="https://www.nccgroup.trust/web-performance/" id="contact">Need help?</a>
     </div>
   </div>
-<script src="popup.js"></script>
+
+  <script src="popup.js"></script>
 </body>
 </html>

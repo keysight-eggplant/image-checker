@@ -34,13 +34,15 @@ h2 {
   font-size: 120%;
 }
 
+.popup-section {
+  margin-bottom: 10px;
+}
+
 .popup-contact {
-  margin-top: 5px;
   text-align: right;
 }
 
 .popup-colourscale {
-  margin-bottom: 10px;
   width: 100%;
 }
 
