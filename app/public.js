@@ -22,6 +22,7 @@
   const SVG_DATA_URI_REGEX = /^data:.*\/svg/i;
   const MIN_IMAGE_SIZE = 10;
   const CHECKER_INTERVAL_MS = 500;
+  let interval;
 
   /**
    * Appends an overlay with images details over the whole web page
@@ -91,7 +92,7 @@
     var path = window.location.pathname;
     var update;
 
-    window.NCC.interval = setInterval(function() {
+    interval = setInterval(function() {
       update = false;
       if (window.location.pathname != path) {
         update = true;
@@ -115,7 +116,7 @@
    */
   function hideImagesInfo() {
     nodeListToArray(document.querySelectorAll('.ncc-image-checker-overlay')).map(o => o.remove());
-    clearInterval(window.NCC.interval);
+    clearInterval(interval);
   }
 
   /**
