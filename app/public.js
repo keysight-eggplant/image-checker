@@ -21,6 +21,7 @@
   const SVG_URL_REGEX = /\.svg/i;
   const SVG_DATA_URI_REGEX = /^data:.*\/svg/i;
   const MIN_IMAGE_SIZE = 10;
+  const CHECKER_INTERVAL_MS = 500;
 
   /**
    * Appends an overlay with images details over the whole web page
@@ -70,13 +71,51 @@
         }
       }
     });
+    setEventListeners();
   }
+
+  /**
+   * Refresh overlay
+   */
+  function refreshImagesInfo() {
+    hideImagesInfo();
+    showImagesInfo(null);
+  }
+
+  /**
+   * Set event listeners
+   */
+  function setEventListeners() {
+    var width = window.innerWidth;
+    var height = window.innerHeight;
+    var path = window.location.pathname;
+    var update;
+
+    window.NCC.interval = setInterval(function() {
+      update = false;
+      if (window.location.pathname != path) {
+        update = true;
+        path = window.location.pathname;
+      }
+      if (window.innerHeight != height || window.innerWidth != width) {
+        update = true;
+        width = window.innerWidth;
+        height = window.innerHeight;
+      }
+      console.log(update);
+      if (update) {
+        refreshImagesInfo();
+      }
+    }, CHECKER_INTERVAL_MS); 
+  }
+
 
   /**
    * Remove all overlays
    */
   function hideImagesInfo() {
     nodeListToArray(document.querySelectorAll('.ncc-image-checker-overlay')).map(o => o.remove());
+    clearInterval(window.NCC.interval);
   }
 
   /**
