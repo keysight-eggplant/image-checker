@@ -87,27 +87,26 @@
    * Set event listeners
    */
   function setEventListeners() {
-    var width = window.innerWidth;
-    var height = window.innerHeight;
-    var path = window.location.pathname;
-    var update;
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    let path = window.location.pathname;
+    let update;
 
     interval = setInterval(function() {
       update = false;
-      if (window.location.pathname != path) {
+      if (window.location.pathname !== path) {
         update = true;
         path = window.location.pathname;
       }
-      if (window.innerHeight != height || window.innerWidth != width) {
+      if (window.innerHeight !== height || window.innerWidth !== width) {
         update = true;
         width = window.innerWidth;
         height = window.innerHeight;
       }
-      console.log(update);
       if (update) {
         refreshImagesInfo();
       }
-    }, CHECKER_INTERVAL_MS); 
+    }, CHECKER_INTERVAL_MS);
   }
 
 
