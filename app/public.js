@@ -92,7 +92,7 @@
     let path = window.location.pathname;
     let update;
 
-    interval = setInterval(function() {
+    interval = setInterval(() => {
       update = false;
       if (window.location.pathname !== path) {
         update = true;
