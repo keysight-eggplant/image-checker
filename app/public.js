@@ -110,7 +110,6 @@
     }, CHECKER_INTERVAL_MS);
   }
 
-
   /**
    * Remove all overlays
    */
