@@ -94,6 +94,7 @@
 
     refreshImagesInterval = setInterval(() => {
       update = false;
+      /* istanbul ignore if */
       if (window.location.pathname !== path) {
         update = true;
         path = window.location.pathname;
