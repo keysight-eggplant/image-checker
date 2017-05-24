@@ -14,7 +14,10 @@
     "default_title": "NCC Image Checker",
     "default_popup": "app/popup.html"
   },
-  "options_page": "app/options.html",
+  "options_ui": {
+    "page": "app/options.html",
+    "chrome_style": true
+  },
   "content_scripts": [
     {
       "matches": [
