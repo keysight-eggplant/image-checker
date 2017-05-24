@@ -29,6 +29,7 @@
 
   getStartButton().addEventListener('click', start, false);
   getStopButton().addEventListener('click', stop, false);
+  getOptionsLink().addEventListener('click', openOptions, false);
 
   sendMessageToActiveTab({message: 'info'}, (response) => {
     if (response.message === 'inactive') {
@@ -68,6 +69,14 @@
     getStartButton().style.display = 'block';
     getStopButton().style.display = 'none';
     sendMessageToActiveTab({message: 'stop'});
+  }
+
+  function getOptionsLink() {
+    return document.getElementById('options');
+  }
+
+  function openOptions() {
+    chrome.runtime.openOptionsPage();
   }
 
   function sendMessageToActiveTab(message, callback) {
