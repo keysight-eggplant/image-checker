@@ -72,7 +72,7 @@
         }
       }
     });
-    setEventListeners();
+    setRefreshImagesWatcher();
   }
 
   /**
@@ -86,7 +86,7 @@
   /**
    * Set event listeners
    */
-  function setEventListeners() {
+  function setRefreshImagesWatcher() {
     let width = window.innerWidth;
     let height = window.innerHeight;
     let path = window.location.pathname;
