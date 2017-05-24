@@ -21,6 +21,14 @@ html, body {
   font-family: sans-serif;
 }
 
+a {
+  color: #2364aa;
+}
+
+a:focus, a:hover {
+  color: #1a4b80;
+}
+
 .ncc-logo {
   width: 200px;
 }
