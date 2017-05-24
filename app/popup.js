@@ -19,6 +19,7 @@
 
   chrome.runtime.onMessage.addListener((request) => {
     if (request.message === 'loaded') {
+      getLoading().style.display = 'none';
       getStartButton().style.display = 'inline-block';
       getStopButton().style.display = 'none';
     }
@@ -32,15 +33,21 @@
 
   sendMessageToActiveTab({message: 'info'}, (response) => {
     if (response.message === 'inactive') {
+      getLoading().style.display = 'none';
       getStartButton().style.display = 'inline-block';
       getStopButton().style.display = 'none';
     }
 
     if (response.message === 'active') {
+      getLoading().style.display = 'none';
       getStartButton().style.display = 'none';
       getStopButton().style.display = 'inline-block';
     }
   });
+
+  function getLoading() {
+    return document.getElementById('loading');
+  }
 
   function getStartButton() {
     return document.getElementById('start');
