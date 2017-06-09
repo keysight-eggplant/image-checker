@@ -176,6 +176,7 @@
     element.style.left = `${image.position.left}px`;
     element.style.backgroundColor = getBackgroundColor(getImageCoverage(image));
     element.style.border = '1px solid black';
+    element.style.overflow = 'auto';
     element.classList.add(OVERLAY_CLASS);
   }
 
