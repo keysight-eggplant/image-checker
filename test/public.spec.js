@@ -30,6 +30,9 @@ describe('imageChecker', () => {
   let crossDomainImg;
   let svgImg;
 
+  beforeEach(() => {
+    spyOn(window, 'setInterval');
+  });
   beforeEach((done) => {
     images = document.createElement('div');
     images.id = 'images';
@@ -99,6 +102,45 @@ describe('imageChecker', () => {
       let textLines = getImageOverlayTextLines(0);
 
       expect(textLines).not.toContain(jasmine.stringMatching(/\?mock=true/));
+    });
+
+    describe('refreshImages', () => {
+      beforeEach(() => {
+        createDomNodes([
+          createImg()
+        ]);
+        window.NCC.imageChecker.showImagesInfo();
+      });
+
+      it('should refresh images if the window height changes', () => {
+        let intervalFn = window.setInterval.calls.mostRecent().args[0];
+        createDomNodes([
+          createImg()
+        ]);
+        window.innerHeight += 1;
+
+        intervalFn();
+
+        let imageOverlays = document.querySelectorAll('.ncc-image-checker-overlay');
+        expect(imageOverlays.length).toEqual(2);
+      });
+
+      it('should refresh images if the window width changes', () => {
+        let intervalFn = window.setInterval.calls.mostRecent().args[0];
+        createDomNodes([
+          createImg()
+        ]);
+        window.innerWidth += 1;
+
+        intervalFn();
+
+        let imageOverlays = document.querySelectorAll('.ncc-image-checker-overlay');
+        expect(imageOverlays.length).toEqual(2);
+      });
+
+      it('should create an interval of 500ms', () => {
+        expect(window.setInterval.calls.mostRecent().args[1]).toEqual(500);
+      });
     });
 
     describe('big images overlays', () => {
