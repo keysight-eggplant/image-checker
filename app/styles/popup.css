@@ -23,8 +23,12 @@ html, body {
 
 .ncc-logo {
   width: 200px;
-  
 }
+
+.ncc-hide {
+  display: none !important;
+}
+
 h2 {
   margin-top: 0px;
 }
