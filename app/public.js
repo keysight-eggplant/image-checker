@@ -89,15 +89,16 @@
   function setRefreshImagesWatcher() {
     let width = window.innerWidth;
     let height = window.innerHeight;
-    let path = window.location.pathname;
+    let href = window.location.href;
     let update;
 
+    clearInterval(refreshImagesInterval);
     refreshImagesInterval = setInterval(() => {
       update = false;
       /* istanbul ignore if */
-      if (window.location.pathname !== path) {
+      if (window.location.href !== href) {
         update = true;
-        path = window.location.pathname;
+        href = window.location.href;
       }
       if (window.innerHeight !== height || window.innerWidth !== width) {
         update = true;

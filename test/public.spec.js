@@ -32,6 +32,7 @@ describe('imageChecker', () => {
 
   beforeEach(() => {
     spyOn(window, 'setInterval');
+    spyOn(window, 'clearInterval');
   });
   beforeEach((done) => {
     images = document.createElement('div');
@@ -105,10 +106,15 @@ describe('imageChecker', () => {
     });
 
     describe('refreshImages', () => {
+      let mockIntervalId;
       beforeEach(() => {
         createDomNodes([
           createImg()
         ]);
+        window.setInterval.calls.reset();
+        window.clearInterval.calls.reset();
+        mockIntervalId = /mockIntervalId/;
+        window.setInterval.and.returnValue(mockIntervalId);
         window.NCC.imageChecker.showImagesInfo();
       });
 
@@ -140,6 +146,11 @@ describe('imageChecker', () => {
 
       it('should create an interval of 500ms', () => {
         expect(window.setInterval.calls.mostRecent().args[1]).toEqual(500);
+      });
+
+      it('should clear existing interval before creating a new one', () => {
+        window.NCC.imageChecker.showImagesInfo();
+        expect(window.clearInterval).toHaveBeenCalledWith(mockIntervalId);
       });
     });
 
