@@ -15,7 +15,10 @@
  */
 
 (function() {
-  initGa();
+  let options = JSON.parse(localStorage.getItem('options') || '{}');
+  if (options.gaEnabled === false) {
+    window['ga-disable-UA-97952592-1'] = true;
+  }
 
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -25,11 +28,4 @@
   ga('create', 'UA-97952592-1', 'auto');
   // Removes failing protocol check. @see: http://stackoverflow.com/a/22152353/1958200
   ga('set', 'checkProtocolTask', null);
-
-  function initGa() {
-    let options = JSON.parse(localStorage.getItem('options') || '{}');
-    if (options.gaEnabled === false) {
-      window['ga-disable-UA-97952592-1'] = true;
-    }
-  }
 }());
