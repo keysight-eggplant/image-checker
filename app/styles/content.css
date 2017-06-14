@@ -20,6 +20,8 @@
   box-sizing: border-box !important;
   padding: 5px !important;
   font-size: 90% !important;
+  border: 1px solid black !important;
+  overflow: auto !important;
 }
 
 .ncc-image-checker-overlay p, .ncc-image-checker-overlay a {
