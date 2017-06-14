@@ -30,6 +30,7 @@
 
   getStartButton().addEventListener('click', start, false);
   getStopButton().addEventListener('click', stop, false);
+  getOptionsLink().addEventListener('click', openOptions, false);
 
   sendMessageToActiveTab({message: 'info'}, (response) => {
     if (response.message === 'inactive') {
@@ -75,6 +76,14 @@
     getStartButton().classList.remove('ncc-hide');
     getStopButton().classList.add('ncc-hide');
     sendMessageToActiveTab({message: 'stop'});
+  }
+
+  function getOptionsLink() {
+    return document.getElementById('options');
+  }
+
+  function openOptions() {
+    chrome.runtime.openOptionsPage();
   }
 
   function sendMessageToActiveTab(message, callback) {

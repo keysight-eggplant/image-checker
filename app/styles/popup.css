@@ -21,6 +21,14 @@ html, body {
   font-family: sans-serif;
 }
 
+a {
+  color: #2364aa;
+}
+
+a:focus, a:hover {
+  color: #1a4b80;
+}
+
 .ncc-logo {
   width: 200px;
 }
@@ -32,19 +40,22 @@ html, body {
 h2 {
   margin-top: 0px;
 }
+
 .popup-btn {
   width: 100%;
   line-height: 25px;
   font-size: 120%;
 }
 
+.popup-section {
+  margin-bottom: 10px;
+}
+
 .popup-contact {
-  margin-top: 5px;
   text-align: right;
 }
 
 .popup-colourscale {
-  margin-bottom: 10px;
   width: 100%;
 }
 
