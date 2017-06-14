@@ -19,14 +19,14 @@
 
   chrome.runtime.onMessage.addListener((request) => {
     if (request.message === 'loaded') {
-      getLoading().style.display = 'none';
-      getStartButton().style.display = 'inline-block';
-      getStopButton().style.display = 'none';
+      getLoading().classList.add('ncc-hide');
+      getStartButton().classList.remove('ncc-hide');
+      getStopButton().classList.add('ncc-hide');
     }
   });
 
-  getStartButton().style.display = 'none';
-  getStopButton().style.display = 'none';
+  getStartButton().classList.add('ncc-hide');
+  getStopButton().classList.add('ncc-hide');
 
   getStartButton().addEventListener('click', start, false);
   getStopButton().addEventListener('click', stop, false);
@@ -34,15 +34,15 @@
 
   sendMessageToActiveTab({message: 'info'}, (response) => {
     if (response.message === 'inactive') {
-      getLoading().style.display = 'none';
-      getStartButton().style.display = 'inline-block';
-      getStopButton().style.display = 'none';
+      getLoading().classList.add('ncc-hide');
+      getStartButton().classList.remove('ncc-hide');
+      getStopButton().classList.add('ncc-hide');
     }
 
     if (response.message === 'active') {
-      getLoading().style.display = 'none';
-      getStartButton().style.display = 'none';
-      getStopButton().style.display = 'inline-block';
+      getLoading().classList.add('ncc-hide');
+      getStartButton().classList.add('ncc-hide');
+      getStopButton().classList.remove('ncc-hide');
     }
   });
 
@@ -59,8 +59,8 @@
   }
 
   function start() {
-    getStartButton().style.display = 'none';
-    getStopButton().style.display = 'block';
+    getStartButton().classList.add('ncc-hide');
+    getStopButton().classList.remove('ncc-hide');
     sendMessageToActiveTab({message: 'start'});
     chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
       ga('send', {
@@ -73,8 +73,8 @@
   }
 
   function stop() {
-    getStartButton().style.display = 'block';
-    getStopButton().style.display = 'none';
+    getStartButton().classList.remove('ncc-hide');
+    getStopButton().classList.add('ncc-hide');
     sendMessageToActiveTab({message: 'stop'});
   }
 
