@@ -176,7 +176,6 @@
     element.style.top = `${image.position.top}px`;
     element.style.left = `${image.position.left}px`;
     element.style.backgroundColor = getBackgroundColor(getImageCoverage(image));
-    element.style.border = '1px solid black';
     element.classList.add(OVERLAY_CLASS);
   }
 
