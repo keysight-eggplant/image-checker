@@ -14,22 +14,22 @@
  limitations under the License.
  */
 
-.ncc-image-checker-overlay {
-  position: absolute !important;
-  z-index: 999999 !important;
-  box-sizing: border-box !important;
-  padding: 5px !important;
-  font-size: 90% !important;
-  border: 1px solid black !important;
-  overflow: auto !important;
-}
+(function() {
+  init();
 
-.ncc-image-checker-overlay p, .ncc-image-checker-overlay a {
-  overflow-wrap: break-word !important;
-  word-wrap: break-word !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  font-size: 14px !important;
-  line-height: 17px !important;
-  color: #000 !important;
-}
+  function getGaEnabledCheckbox() {
+    return document.getElementById('gaEnabled');
+  }
+
+  function toggleGaEnabled(event) {
+    let options = JSON.parse(localStorage.getItem('options') || '{}');
+    options.gaEnabled = event.target.checked;
+    localStorage.setItem('options', JSON.stringify(options));
+  }
+
+  function init() {
+    let options = JSON.parse(localStorage.getItem('options') || '{}');
+    getGaEnabledCheckbox().checked = options.gaEnabled !== false;
+    getGaEnabledCheckbox().addEventListener('click', toggleGaEnabled, false);
+  }
+}());

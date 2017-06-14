@@ -1,4 +1,20 @@
-describe('imageChecker', function() {
+/**
+ Copyright 2017 NCC Group PLC http://www.nccgroup.trust/
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
+
+describe('imageChecker', () => {
   let images;
   let img;
   let bigImg;
@@ -12,8 +28,13 @@ describe('imageChecker', function() {
   let smallWidthUrlImg;
   let missingImg;
   let crossDomainImg;
+  let svgImg;
 
-  beforeEach(function(done) {
+  beforeEach(() => {
+    spyOn(window, 'setInterval');
+    spyOn(window, 'clearInterval');
+  });
+  beforeEach((done) => {
     images = document.createElement('div');
     images.id = 'images';
     window.document.body.append(images);
@@ -27,7 +48,7 @@ describe('imageChecker', function() {
     window.document.body.appendChild(preloaded);
   });
 
-  afterEach(function() {
+  afterEach(() => {
     // cleanup
     document.body.style = '';
 
@@ -38,12 +59,12 @@ describe('imageChecker', function() {
 
     let overlays = document.querySelectorAll('.ncc-image-checker-overlay');
     overlays = [].slice.call(overlays);
-    overlays.map(function(overlay) {
+    overlays.forEach((overlay) => {
       overlay.parentElement.removeChild(overlay);
     });
   });
 
-  it('should expose public api', function() {
+  it('should expose public api', () => {
     expect(window.NCC).toBeDefined();
     expect(window.NCC.imageChecker).toBeDefined();
     expect(window.NCC.imageChecker.showImagesInfo).toEqual(jasmine.any(Function));
@@ -51,8 +72,8 @@ describe('imageChecker', function() {
     expect(window.NCC.imageChecker.isImagesInfoActive).toEqual(jasmine.any(Function));
   });
 
-  describe('showImagesInfo()', function() {
-    it('should show image overlays only for available images', function() {
+  describe('showImagesInfo()', () => {
+    it('should show image overlays only for available images', () => {
       createDomNodes([
         createMissingImg(),
         createBackgroundImg(),
@@ -73,25 +94,85 @@ describe('imageChecker', function() {
       expect(imageOverlays.length).toEqual(5);
     });
 
-    describe('big images overlays', function() {
-      beforeEach(function() {
+    it('should ignore query parameters', () => {
+      createDomNodes([
+        createBigImg({queryParams: 'mock=true'})
+      ]);
+      window.NCC.imageChecker.showImagesInfo();
+
+      let textLines = getImageOverlayTextLines(0);
+
+      expect(textLines).not.toContain(jasmine.stringMatching(/\?mock=true/));
+    });
+
+    describe('refreshImages', () => {
+      let mockIntervalId;
+      beforeEach(() => {
+        createDomNodes([
+          createImg()
+        ]);
+        window.setInterval.calls.reset();
+        window.clearInterval.calls.reset();
+        mockIntervalId = /mockIntervalId/;
+        window.setInterval.and.returnValue(mockIntervalId);
+        window.NCC.imageChecker.showImagesInfo();
+      });
+
+      it('should refresh images if the window height changes', () => {
+        let intervalFn = window.setInterval.calls.mostRecent().args[0];
+        createDomNodes([
+          createImg()
+        ]);
+        window.innerHeight += 1;
+
+        intervalFn();
+
+        let imageOverlays = document.querySelectorAll('.ncc-image-checker-overlay');
+        expect(imageOverlays.length).toEqual(2);
+      });
+
+      it('should refresh images if the window width changes', () => {
+        let intervalFn = window.setInterval.calls.mostRecent().args[0];
+        createDomNodes([
+          createImg()
+        ]);
+        window.innerWidth += 1;
+
+        intervalFn();
+
+        let imageOverlays = document.querySelectorAll('.ncc-image-checker-overlay');
+        expect(imageOverlays.length).toEqual(2);
+      });
+
+      it('should create an interval of 500ms', () => {
+        expect(window.setInterval.calls.mostRecent().args[1]).toEqual(500);
+      });
+
+      it('should clear existing interval before creating a new one', () => {
+        window.NCC.imageChecker.showImagesInfo();
+        expect(window.clearInterval).toHaveBeenCalledWith(mockIntervalId);
+      });
+    });
+
+    describe('big images overlays', () => {
+      beforeEach(() => {
         createDomNodes([
           createBigImg()
         ]);
         window.NCC.imageChecker.showImagesInfo();
       });
 
-      it('should show all info', function() {
+      it('should show all info', () => {
         let textLines = getImageOverlayTextLines(0);
 
         expect(textLines).toContain(jasmine.stringMatching('...holder-100x80.png'));
         expect(textLines).toContain('Display: 200 x 160');
         expect(textLines).toContain('Natural: 100 x 80');
-        expect(textLines).toContain('Image coverage: 25.00%');
+        expect(textLines).toContain('Image coverage: 0.5x');
         expect(textLines).toContain('File Size: 4.464 KB');
       });
 
-      it('should have url link to new tab', function() {
+      it('should have url link to new tab', () => {
         let imageOverlay = getImageOverlay(0);
         let urlLink = imageOverlay.getElementsByTagName('a')[0];
 
@@ -101,31 +182,31 @@ describe('imageChecker', function() {
       });
     });
 
-    describe('medium images overlays', function() {
-      beforeEach(function() {
+    describe('medium images overlays', () => {
+      beforeEach(() => {
         createDomNodes([
           createMediumImg()
         ]);
         window.NCC.imageChecker.showImagesInfo();
       });
 
-      it('should not show url info', function() {
+      it('should not show url info', () => {
         let imageOverlay = getImageOverlay(0);
         let urlLink = imageOverlay.getElementsByTagName('a')[0];
 
         expect(urlLink).toBeUndefined();
       });
 
-      it('should show other info', function() {
+      it('should show other info', () => {
         let textLines = getImageOverlayTextLines(0);
 
         expect(textLines).toContain('Display: 151 x 71');
         expect(textLines).toContain('Natural: 100 x 80');
-        expect(textLines).toContain('Image coverage: 74.62%');
+        expect(textLines).toContain('Image coverage: 1.1x');
         expect(textLines).toContain('File Size: 4.464 KB');
       });
 
-      it('should click to new tab', function() {
+      it('should click to new tab', () => {
         let urlLink = getImageOverlay(0);
 
         expect(urlLink.href).toEqual(jasmine.stringMatching('test/assets/placeholder-100x80.png'));
@@ -133,30 +214,30 @@ describe('imageChecker', function() {
       });
     });
 
-    describe('small images overlays', function() {
-      beforeEach(function() {
+    describe('small images overlays', () => {
+      beforeEach(() => {
         createDomNodes([
           createSmallImg()
         ]);
         window.NCC.imageChecker.showImagesInfo();
       });
 
-      it('should only have title', function() {
+      it('should only have title', () => {
         let imageOverlay = getImageOverlay(0);
         let titleParts = imageOverlay.title.split(',');
-        expect(titleParts[0].trim()).toEqual('Coverage: 106.67%');
+        expect(titleParts[0].trim()).toEqual('Coverage: 1.60x');
         expect(titleParts[1].trim()).toEqual('File Size: 4.464 KB');
         expect(titleParts[2].trim()).toEqual(jasmine.stringMatching('URL: .*test/assets/placeholder-100x80.png'));
       });
 
-      it('should not have any content', function() {
+      it('should not have any content', () => {
         let textLines = getImageOverlayTextLines(0);
         expect(textLines).toEqual(['']);
       });
     });
 
-    describe('cross domain images overlays', function() {
-      beforeEach(function(done) {
+    describe('cross domain images overlays', () => {
+      beforeEach((done) => {
         createDomNodes([
           createCrossDomainImg()
         ]);
@@ -166,7 +247,7 @@ describe('imageChecker', function() {
         };
       });
 
-      it('should not show file size', function() {
+      it('should not show file size', () => {
         window.performance.getEntriesByName.and.returnValue([{encodedBodySize: 0}]);
 
         window.NCC.imageChecker.showImagesInfo();
@@ -175,10 +256,26 @@ describe('imageChecker', function() {
         expect(textLines).toContain('File size unavailable');
       });
     });
+
+    describe('svg image overlays', () => {
+      beforeEach(() => {
+        createDomNodes([
+          createSvgImg(),
+          createSvgImg({dataUri: true}),
+          createSvgImg({queryParams: 'mock=true'})
+        ]);
+      });
+
+      it('should not show any overlay', () => {
+        window.NCC.imageChecker.showImagesInfo();
+
+        expect(getImageOverlays().length).toEqual(0);
+      });
+    });
   });
 
-  describe('hideImagesInfo()', function() {
-    it('should remove all image overlays', function() {
+  describe('hideImagesInfo()', () => {
+    it('should remove all image overlays', () => {
       createDomNodes([
         createBackgroundImg(),
         createNoBackgroundImg(),
@@ -200,8 +297,8 @@ describe('imageChecker', function() {
     });
   });
 
-  describe('isImagesInfoActive()', function() {
-    it('should return true', function() {
+  describe('isImagesInfoActive()', () => {
+    it('should return true', () => {
       createDomNodes([
         createImg()
       ]);
@@ -212,7 +309,7 @@ describe('imageChecker', function() {
       expect(window.NCC.imageChecker.isImagesInfoActive()).toEqual(true);
     });
 
-    it('should return false when hidden after shown', function() {
+    it('should return false when hidden after shown', () => {
       createDomNodes([
         createImg()
       ]);
@@ -225,7 +322,7 @@ describe('imageChecker', function() {
       expect(window.NCC.imageChecker.isImagesInfoActive()).toEqual(false);
     });
 
-    it('should return false when no images are found', function() {
+    it('should return false when no images are found', () => {
       createDomNodes();
       window.NCC.imageChecker.showImagesInfo();
 
@@ -233,24 +330,8 @@ describe('imageChecker', function() {
     });
   });
 
-  describe('_getTruncatedImageUrl()', function() {
-    it('should truncate url that does not fit bounding box', function() {
-      expect(window.NCC.imageChecker._getTruncatedImageUrl({
-        width: 50,
-        url: '1234567890'
-      })).toEqual('123...90');
-    });
-
-    it('should not truncate url that does fit bounding box', function() {
-      expect(window.NCC.imageChecker._getTruncatedImageUrl({
-        width: 50,
-        url: '12345678'
-      })).toEqual('12345678');
-    });
-  });
-
-  describe('_getElementTopLeft()', function() {
-    it('should use x y if available', function() {
+  describe('_getElementTopLeft()', () => {
+    it('should use x y if available', () => {
       createDomNodes([
         createImg()
       ]);
@@ -259,7 +340,7 @@ describe('imageChecker', function() {
       expect(window.NCC.imageChecker._getElementTopLeft(img)).toEqual({top: 4, left: 4});
     });
 
-    it('should use parent offset as fallback', function() {
+    it('should use parent offset as fallback', () => {
       createDomNodes([
         createBackgroundImg()
       ]);
@@ -269,8 +350,8 @@ describe('imageChecker', function() {
     });
   });
 
-  describe('_getImageCoverage()', function() {
-    it('should calculate natural size percentage of rendered size', function() {
+  describe('_getImageCoverage()', () => {
+    it('should calculate natural size percentage of rendered size', () => {
       expect(window.NCC.imageChecker._getImageCoverage({
         naturalSize: {
           width: 200,
@@ -282,8 +363,8 @@ describe('imageChecker', function() {
     });
   });
 
-  describe('_getNaturalSize()', function() {
-    it('should use natural size if available', function() {
+  describe('_getNaturalSize()', () => {
+    it('should use natural size if available', () => {
       createDomNodes([
         createImg()
       ]);
@@ -291,36 +372,40 @@ describe('imageChecker', function() {
       expect(window.NCC.imageChecker._getNaturalSize(img)).toEqual({width: 100, height: 80});
     });
 
-    it('should use image natural size as fallback', function() {
+    it('should use image natural size as fallback', () => {
       createDomNodes([
         createBackgroundImg()
       ]);
 
-      expect(window.NCC.imageChecker._getNaturalSize(backgroundImg)).toEqual({width: 100, height: 80});
+      expect(window.NCC.imageChecker._getNaturalSize(backgroundImg)).toEqual({
+        width: 100,
+        height: 80
+      });
     });
   });
 
-  describe('_getBackgroundColor', function() {
-    it('should return high coverage color', function() {
-      expect(window.NCC.imageChecker._getBackgroundColor(300)).toEqual('red');
+  describe('_getBackgroundColor', () => {
+    it('should return high coverage color', () => {
+      expect(window.NCC.imageChecker._getBackgroundColor(300)).toEqual('hsla(0, 100%, 50%, .8)');
     });
 
-    it('should return medium coverage color', function() {
-      expect(window.NCC.imageChecker._getBackgroundColor(150)).toEqual('orange');
+    it('should return medium coverage color', () => {
+      expect(window.NCC.imageChecker._getBackgroundColor(150)).toEqual('hsla(90, 100%, 50%, .8)');
     });
 
-    it('should return low coverage color', function() {
-      expect(window.NCC.imageChecker._getBackgroundColor(75)).toEqual('green');
+    it('should return low coverage color', () => {
+      expect(window.NCC.imageChecker._getBackgroundColor(75)).toEqual('hsla(165, 100%, 50%, .8)');
     });
 
-    it('should return very low coverage color', function() {
-      expect(window.NCC.imageChecker._getBackgroundColor(74)).toEqual('blue');
+    it('should return low coverage color for negative percentage', () => {
+      expect(window.NCC.imageChecker._getBackgroundColor(-1)).toEqual('hsla(240, 100%, 50%, .8)');
     });
   });
 
   function createBackgroundImg() {
     backgroundImg = document.createElement('div');
-    backgroundImg.style = 'display: block;width: 200px;height: 160px; background: url("base/test/assets/placeholder-100x80.png");';
+    backgroundImg.style = 'display: block;width: 200px;height: 160px;' +
+      'background: url("base/test/assets/placeholder-100x80.png");';
     return backgroundImg;
   }
 
@@ -375,9 +460,13 @@ describe('imageChecker', function() {
     return img;
   }
 
-  function createBigImg() {
+  function createBigImg(options) {
+    options = options || {};
     bigImg = document.createElement('img');
     bigImg.src = 'base/test/assets/placeholder-100x80.png';
+    if (options.queryParams) {
+      bigImg.src += `?${options.queryParams}`;
+    }
     bigImg.style = 'display: block;width: 200px;height: 160px;';
     return bigImg;
   }
@@ -396,9 +485,28 @@ describe('imageChecker', function() {
     return crossDomainImg;
   }
 
+  function createSvgImg(options) {
+    options = options || {};
+    svgImg = document.createElement('img');
+    if (options.dataUri) {
+      svgImg.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjgwIiB4bWxucz0iaHR0cDovL3d3dy53My' +
+        '5vcmcvMjAwMC9zdmciPgogICAgPHJlY3QgeD0iMiIgeT0iMiIgd2lkdGg9Ijk2IiBoZWlnaHQ9Ijc2IiBzdHlsZT0iZmlsbDojREVER' +
+        'URFO3N0cm9rZTojNTU1NTU1O3N0cm9rZS13aWR0aDoyIi8+CiAgICA8dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1zaXplPSIxOCIg' +
+        'dGV4dC1hbmNob3I9Im1pZGRsZSIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiCiAgICAgICAgICBmb250LWZhbWlseT0ibW9ub3N' +
+        'wYWNlLCBzYW5zLXNlcmlmIiBmaWxsPSIjNTU1NTU1Ij4xMDAmIzIxNTs4MAogICAgPC90ZXh0Pgo8L3N2Zz4K';
+    } else {
+      svgImg.src = 'base/test/assets/placeholder-100x80.svg';
+    }
+    if (options.queryParams) {
+      svgImg.src += `?${options.queryParams}`;
+    }
+    svgImg.style = 'display: block;width: 200px;height: 160px;';
+    return svgImg;
+  }
+
   function createDomNodes(domNodes) {
     domNodes = domNodes || [];
-    domNodes.forEach(function(domNode) {
+    domNodes.forEach((domNode) => {
       images.appendChild(domNode);
     });
   }
@@ -409,7 +517,11 @@ describe('imageChecker', function() {
   }
 
   function getImageOverlay(index) {
-    let imageOverlays = document.querySelectorAll('.ncc-image-checker-overlay');
+    let imageOverlays = getImageOverlays();
     return imageOverlays[index];
+  }
+
+  function getImageOverlays() {
+    return document.querySelectorAll('.ncc-image-checker-overlay');
   }
 });

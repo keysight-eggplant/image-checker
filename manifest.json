@@ -3,7 +3,7 @@
   "name": "NCC Image Checker",
   "short_name": "Image Checker",
   "description": "Provides image optimisation information within the browser.",
-  "version": "1.0.0",
+  "version": "1.4.0",
   "icons" : {
     "16": "app/assets/icon.png",
     "48": "app/assets/icon.png",
@@ -13,6 +13,10 @@
     "default_icon": "app/assets/icon.png",
     "default_title": "NCC Image Checker",
     "default_popup": "app/popup.html"
+  },
+  "options_ui": {
+    "page": "app/options.html",
+    "chrome_style": true
   },
   "content_scripts": [
     {
@@ -29,6 +33,7 @@
       "run_at": "document_idle"
     }
   ],
+  "content_security_policy": "script-src 'self' https://www.google-analytics.com; object-src 'self'",
   "permissions": ["activeTab", "tabs"],
   "minimum_chrome_version": "54.0.2840"
 }

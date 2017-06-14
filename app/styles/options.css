@@ -14,22 +14,17 @@
  limitations under the License.
  */
 
-.ncc-image-checker-overlay {
-  position: absolute !important;
-  z-index: 999999 !important;
-  box-sizing: border-box !important;
-  padding: 5px !important;
-  font-size: 90% !important;
-  border: 1px solid black !important;
-  overflow: auto !important;
+html, body {
+  background-color: #eee;
+  color: #111;
+  padding: 3px;
+  font-family: sans-serif;
 }
 
-.ncc-image-checker-overlay p, .ncc-image-checker-overlay a {
-  overflow-wrap: break-word !important;
-  word-wrap: break-word !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  font-size: 14px !important;
-  line-height: 17px !important;
-  color: #000 !important;
+.ncc-logo {
+  width: 200px;
+}
+
+.options-container input[type="checkbox"] {
+  vertical-align: middle;
 }
