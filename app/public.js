@@ -90,6 +90,8 @@
     let width = window.innerWidth;
     let height = window.innerHeight;
     let href = window.location.href;
+    let scrollX = window.scrollX;
+    let scrollY = window.scrollY;
     let update;
 
     clearInterval(refreshImagesInterval);
@@ -104,6 +106,11 @@
         update = true;
         width = window.innerWidth;
         height = window.innerHeight;
+      }
+      if (window.scrollX !== scrollX || window.scrollY !== scrollY) {
+        update = true;
+        scrollX = window.scrollX;
+        scrollY = window.scrollY;
       }
       if (update) {
         refreshImagesInfo();

@@ -144,6 +144,38 @@ describe('imageChecker', () => {
         expect(imageOverlays.length).toEqual(2);
       });
 
+      it('should refresh images if the window scrollX changes', () => {
+        let intervalFn = window.setInterval.calls.mostRecent().args[0];
+        createDomNodes([
+          createImg()
+        ]);
+        window.scrollX += 1;
+
+        intervalFn();
+
+        let imageOverlays = document.querySelectorAll('.ncc-image-checker-overlay');
+        expect(imageOverlays.length).toEqual(2);
+
+        // revert
+        window.scrollX -= 1;
+      });
+
+      it('should refresh images if the window scrollY changes', () => {
+        let intervalFn = window.setInterval.calls.mostRecent().args[0];
+        createDomNodes([
+          createImg()
+        ]);
+        window.scrollY += 1;
+
+        intervalFn();
+
+        let imageOverlays = document.querySelectorAll('.ncc-image-checker-overlay');
+        expect(imageOverlays.length).toEqual(2);
+
+        // revert
+        window.scrollY -= 1;
+      });
+
       it('should create an interval of 500ms', () => {
         expect(window.setInterval.calls.mostRecent().args[1]).toEqual(500);
       });
