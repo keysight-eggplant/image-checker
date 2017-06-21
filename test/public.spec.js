@@ -198,9 +198,9 @@ describe('imageChecker', () => {
         let textLines = getImageOverlayTextLines(0);
 
         expect(textLines).toContain(jasmine.stringMatching('...holder-100x80.png'));
-        expect(textLines).toContain('Display: 200 x 160');
+        expect(textLines).toContain('Display: 300 x 240');
         expect(textLines).toContain('Natural: 100 x 80');
-        expect(textLines).toContain('Image coverage: 0.5x');
+        expect(textLines).toContain('Image coverage: 0.3x');
         expect(textLines).toContain('File Size: 4.464 KB');
       });
 
@@ -499,7 +499,7 @@ describe('imageChecker', () => {
     if (options.queryParams) {
       bigImg.src += `?${options.queryParams}`;
     }
-    bigImg.style = 'display: block;width: 200px;height: 160px;';
+    bigImg.style = 'display: block;width: 300px;height: 240px;';
     return bigImg;
   }
 
