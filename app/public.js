@@ -265,15 +265,10 @@
       top: 0,
       left: 0
     };
-    if (elem.x && elem.y) {
-      location.top = elem.y;
-      location.left = elem.x;
-    } else if (elem.offsetParent) {
-      do {
-        location.top += elem.offsetTop;
-        location.left += elem.offsetLeft;
-        elem = elem.offsetParent;
-      } while (elem);
+    if (elem.getBoundingClientRect) {
+      let boundingClientRect = elem.getBoundingClientRect();
+      location.top = window.scrollY + boundingClientRect.top;
+      location.left = window.scrollX + boundingClientRect.left;
     }
     return location;
   }
