@@ -29,6 +29,7 @@ describe('imageChecker', () => {
   let missingImg;
   let crossDomainImg;
   let svgImg;
+  let video;
 
   beforeEach(() => {
     spyOn(window, 'setInterval');
@@ -75,6 +76,8 @@ describe('imageChecker', () => {
   describe('showImagesInfo()', () => {
     it('should show image overlays only for available images', () => {
       createDomNodes([
+        createVideoPosterImg(),
+        createVideoPosterImg({poster: false}),
         createMissingImg(),
         createBackgroundImg(),
         createNoBackgroundImg(),
@@ -91,7 +94,7 @@ describe('imageChecker', () => {
       window.NCC.imageChecker.showImagesInfo();
 
       let imageOverlays = document.querySelectorAll('.ncc-image-checker-overlay');
-      expect(imageOverlays.length).toEqual(5);
+      expect(imageOverlays.length).toEqual(6);
     });
 
     it('should ignore query parameters', () => {
@@ -502,6 +505,16 @@ describe('imageChecker', () => {
     }
     svgImg.style = 'display: block;width: 200px;height: 160px;';
     return svgImg;
+  }
+
+  function createVideoPosterImg(options) {
+    options = options || {};
+    video = document.createElement('video');
+    if (options.poster !== false) {
+      video.poster = 'base/test/assets/placeholder-100x80.png';
+    }
+    video.style = 'display: block;width: 200px;height: 160px;';
+    return video;
   }
 
   function createDomNodes(domNodes) {
