@@ -94,15 +94,21 @@ describe('imageChecker', () => {
       expect(imageOverlays.length).toEqual(5);
     });
 
-    it('should ignore query parameters', () => {
+    it('should ignore query parameters', (done) => {
       createDomNodes([
         createBigImg({queryParams: 'mock=true'})
       ]);
-      window.NCC.imageChecker.showImagesInfo();
 
-      let textLines = getImageOverlayTextLines(0);
+      bigImg.addEventListener('load', () => {
+        window.NCC.imageChecker.showImagesInfo();
 
-      expect(textLines).not.toContain(jasmine.stringMatching(/\?mock=true/));
+        let textLines = getImageOverlayTextLines(0);
+
+        expect(textLines).toContain('placeholder-100x80.png');
+        expect(textLines).not.toContain(jasmine.stringMatching(/placeholder-100x80.png\?mock=true/));
+
+        done();
+      }, false);
     });
 
     describe('refreshImages', () => {
@@ -495,10 +501,11 @@ describe('imageChecker', () => {
   function createBigImg(options) {
     options = options || {};
     bigImg = document.createElement('img');
-    bigImg.src = 'base/test/assets/placeholder-100x80.png';
+    let src = 'base/test/assets/placeholder-100x80.png';
     if (options.queryParams) {
-      bigImg.src += `?${options.queryParams}`;
+      src += `?${options.queryParams}`;
     }
+    bigImg.src = src;
     bigImg.style = 'display: block;width: 300px;height: 240px;';
     return bigImg;
   }
