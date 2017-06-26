@@ -63,8 +63,7 @@ describe('imageChecker', () => {
       images.parentElement.removeChild(images);
     }
 
-    let overlays = document.querySelectorAll('.ncc-image-checker-overlay');
-    overlays = [].slice.call(overlays);
+    let overlays = [].slice.call(getImageOverlays());
     overlays.forEach((overlay) => {
       overlay.parentElement.removeChild(overlay);
     });
@@ -184,8 +183,7 @@ describe('imageChecker', () => {
 
         intervalFn();
 
-        let imageOverlays = document.querySelectorAll('.ncc-image-checker-overlay');
-        expect(imageOverlays.length).toEqual(2);
+        expect(getImageOverlays().length).toEqual(2);
 
         // revert
         window.scrollY -= 1;
