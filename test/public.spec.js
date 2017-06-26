@@ -30,10 +30,16 @@ describe('imageChecker', () => {
   let crossDomainImg;
   let svgImg;
 
-  beforeEach(() => {
+  beforeAll(() => {
     spyOn(window, 'setInterval');
     spyOn(window, 'clearInterval');
   });
+
+  beforeEach(() => {
+    window.setInterval.calls.reset();
+    window.clearInterval.calls.reset();
+  });
+
   beforeEach((done) => {
     images = document.createElement('div');
     images.id = 'images';
@@ -117,8 +123,6 @@ describe('imageChecker', () => {
         createDomNodes([
           createImg()
         ]);
-        window.setInterval.calls.reset();
-        window.clearInterval.calls.reset();
         mockIntervalId = /mockIntervalId/;
         window.setInterval.and.returnValue(mockIntervalId);
         window.NCC.imageChecker.showImagesInfo();
