@@ -62,7 +62,10 @@
     getStartButton().classList.add('ncc-hide');
     getStopButton().classList.remove('ncc-hide');
     sendMessageToActiveTab({message: 'start'});
-    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+    chrome.tabs.query({
+      active: true,
+      currentWindow: true
+    }, (tabs) => {
       ga('send', {
         hitType: 'event',
         eventCategory: 'imageInfo',
@@ -87,7 +90,10 @@
   }
 
   function sendMessageToActiveTab(message, callback) {
-    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+    chrome.tabs.query({
+      active: true,
+      currentWindow: true
+    }, (tabs) => {
       chrome.tabs.sendMessage(tabs[0].id, message, callback);
     });
   }

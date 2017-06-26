@@ -382,7 +382,10 @@ describe('imageChecker', () => {
       ]);
       document.body.style = 'margin: 4px;';
 
-      expect(window.NCC.imageChecker._getElementTopLeft(img)).toEqual({top: 4, left: 4});
+      expect(window.NCC.imageChecker._getElementTopLeft(img)).toEqual({
+        top: 4,
+        left: 4
+      });
     });
 
     it('should use parent offset as fallback', () => {
@@ -391,7 +394,10 @@ describe('imageChecker', () => {
       ]);
       document.body.style = 'margin: 2px;';
 
-      expect(window.NCC.imageChecker._getElementTopLeft(backgroundImg)).toEqual({top: 2, left: 2});
+      expect(window.NCC.imageChecker._getElementTopLeft(backgroundImg)).toEqual({
+        top: 2,
+        left: 2
+      });
     });
   });
 
@@ -414,7 +420,10 @@ describe('imageChecker', () => {
         createImg()
       ]);
 
-      expect(window.NCC.imageChecker._getNaturalSize(img)).toEqual({width: 100, height: 80});
+      expect(window.NCC.imageChecker._getNaturalSize(img)).toEqual({
+        width: 100,
+        height: 80
+      });
     });
 
     it('should use image natural size as fallback', () => {
