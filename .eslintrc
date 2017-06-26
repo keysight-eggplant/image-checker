@@ -29,6 +29,20 @@
     "object-curly-spacing": [
       "error",
       "never"
+    ],
+    "object-curly-newline": [
+      "error",
+      {
+        "ObjectExpression": {
+          "minProperties": 2
+        }
+      }
+    ],
+    "object-property-newline": [
+      "error",
+      {
+        "allowMultiplePropertiesPerLine": false
+      }
     ]
   }
 }
