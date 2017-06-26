@@ -315,9 +315,9 @@
 
   // video has currentSrc which points to the video file so we need to ignore it
   function getUrl(element) {
-    if (element.poster) {
+    if (element.tagName.toLowerCase() === 'video') {
       return element.poster;
-    } else if (element.tagName.toLowerCase() !== 'video' && element.currentSrc) {
+    } else if (element.currentSrc) {
       return element.currentSrc;
     } else if (element.src) {
       return element.src;
