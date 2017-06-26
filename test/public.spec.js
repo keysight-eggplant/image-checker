@@ -119,6 +119,7 @@ describe('imageChecker', () => {
 
     describe('refreshImages', () => {
       let mockIntervalId;
+      let intervalFn;
       beforeEach(() => {
         createDomNodes([
           createImg()
@@ -126,10 +127,17 @@ describe('imageChecker', () => {
         mockIntervalId = /mockIntervalId/;
         window.setInterval.and.returnValue(mockIntervalId);
         window.NCC.imageChecker.showImagesInfo();
+        intervalFn = window.setInterval.calls.mostRecent().args[0];
+      });
+
+      it('should not refresh any images if nothing significant changes', () => {
+        intervalFn();
+
+        expect(getImageOverlays().length).toEqual(1);
       });
 
       it('should refresh images if the window height changes', () => {
-        let intervalFn = window.setInterval.calls.mostRecent().args[0];
+        expect(getImageOverlays().length).toEqual(1);
         createDomNodes([
           createImg()
         ]);
@@ -137,12 +145,11 @@ describe('imageChecker', () => {
 
         intervalFn();
 
-        let imageOverlays = document.querySelectorAll('.ncc-image-checker-overlay');
-        expect(imageOverlays.length).toEqual(2);
+        expect(getImageOverlays().length).toEqual(2);
       });
 
       it('should refresh images if the window width changes', () => {
-        let intervalFn = window.setInterval.calls.mostRecent().args[0];
+        expect(getImageOverlays().length).toEqual(1);
         createDomNodes([
           createImg()
         ]);
@@ -150,12 +157,11 @@ describe('imageChecker', () => {
 
         intervalFn();
 
-        let imageOverlays = document.querySelectorAll('.ncc-image-checker-overlay');
-        expect(imageOverlays.length).toEqual(2);
+        expect(getImageOverlays().length).toEqual(2);
       });
 
       it('should refresh images if the window scrollX changes', () => {
-        let intervalFn = window.setInterval.calls.mostRecent().args[0];
+        expect(getImageOverlays().length).toEqual(1);
         createDomNodes([
           createImg()
         ]);
@@ -163,15 +169,14 @@ describe('imageChecker', () => {
 
         intervalFn();
 
-        let imageOverlays = document.querySelectorAll('.ncc-image-checker-overlay');
-        expect(imageOverlays.length).toEqual(2);
+        expect(getImageOverlays().length).toEqual(2);
 
         // revert
         window.scrollX -= 1;
       });
 
       it('should refresh images if the window scrollY changes', () => {
-        let intervalFn = window.setInterval.calls.mostRecent().args[0];
+        expect(getImageOverlays().length).toEqual(1);
         createDomNodes([
           createImg()
         ]);
