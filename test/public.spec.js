@@ -130,6 +130,8 @@ describe('imageChecker', () => {
       });
 
       it('should not refresh any images if nothing significant changes', () => {
+        expect(getImageOverlays().length).toEqual(1);
+
         intervalFn();
 
         expect(getImageOverlays().length).toEqual(1);
