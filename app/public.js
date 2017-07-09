@@ -143,6 +143,10 @@
     optimalP.innerHTML = `Image coverage: ${scale}x`;
     div.appendChild(optimalP);
 
+    let dprP = document.createElement('p');
+    dprP.innerHTML = `Device pixel ratio: ${window.devicePixelRatio}`;
+    div.appendChild(dprP);
+
     if (image.size) {
       let sizeP = document.createElement('p');
       sizeP.innerHTML = image.size > 0 ? `File Size: ${image.size} KB` : 'File size unavailable';
@@ -193,7 +197,7 @@
 
   function getImageCoverage(image) {
     let naturalArea = image.naturalSize.width * image.naturalSize.height;
-    let renderArea = image.width * image.height;
+    let renderArea = window.devicePixelRatio * window.devicePixelRatio * image.width * image.height;
     return (100 * (naturalArea / renderArea));
   }
 

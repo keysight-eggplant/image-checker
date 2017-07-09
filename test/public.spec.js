@@ -351,6 +351,13 @@ describe('imageChecker', () => {
   });
 
   describe('_getImageCoverage()', () => {
+    beforeEach(() => {
+      window.devicePixelRatio = 1;
+    });
+    afterEach(() => {
+      window.devicePixelRatio = 1;
+    });
+
     it('should calculate natural size percentage of rendered size', () => {
       expect(window.NCC.imageChecker._getImageCoverage({
         naturalSize: {
@@ -360,6 +367,19 @@ describe('imageChecker', () => {
         width: 100,
         height: 100
       })).toEqual(400);
+    });
+
+    it('should account for device pixel ratio', () => {
+      window.devicePixelRatio = 2;
+
+      expect(window.NCC.imageChecker._getImageCoverage({
+        naturalSize: {
+          width: 200,
+          height: 200
+        },
+        width: 100,
+        height: 100
+      })).toEqual(100);
     });
   });
 
