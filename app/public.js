@@ -202,8 +202,8 @@
   }
 
   function getImageScale(image) {
-    let widthRatio = image.naturalSize.width / image.width;
-    let heightRatio = image.naturalSize.height / image.height;
+    let widthRatio = image.naturalSize.width / (window.devicePixelRatio * image.width);
+    let heightRatio = image.naturalSize.height / (window.devicePixelRatio * image.height);
     return Math.max(widthRatio, heightRatio);
   }
 
@@ -366,6 +366,7 @@
     _getSize: getSize,
     _getNaturalSize: getNaturalSize,
     _getImageCoverage: getImageCoverage,
+    _getImageScale: getImageScale,
     _getElementTopLeft: getElementTopLeft,
     _getAvailableImages: getAvailableImages,
     _getBackgroundColor: getBackgroundColor
