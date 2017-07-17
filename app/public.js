@@ -32,7 +32,7 @@
   function showImagesInfo(images) {
     images = images || document.getElementsByTagName('*');
     images = nodeListToArray(images);
-    let body = document.getElementsByTagName('body')[0];
+    let imagesInfoParentElement = getImagesInfoParentElement();
     getImages(images).forEach(image => {
       const MIN_IMAGE_CONTENT_WIDTH = 150;
       const MIN_IMAGE_CONTENT_HEIGHT = 70;
@@ -54,7 +54,7 @@
             div.appendChild(url);
             styleElement(div, image);
             appendInfoToElement(div, image);
-            body.appendChild(div);
+            imagesInfoParentElement.appendChild(div);
           } else {
             appendInfoToElement(div, image);
             appendAnchorToBody(div, image);
@@ -174,7 +174,7 @@
     anchor.setAttribute('target', '_blank');
     anchor.setAttribute('title', title);
     anchor.appendChild(element);
-    document.getElementsByTagName('body')[0].appendChild(anchor);
+    getImagesInfoParentElement().appendChild(anchor);
   }
 
   function styleElement(element, image) {
@@ -213,15 +213,28 @@
   // this is the last point element is a DOM element
   function getImages(domNodes) {
     let images = getAvailableImages(domNodes);
+
+    let imagesInfoParent = getImagesInfoParent();
+
     return images.map(element => {
       let size = getSize(element);
       if (typeof size === 'number') {
         size = (size / 1024).toFixed(3);
       }
+
+      let position = getElementTopLeft(element);
+
+      // adjust position according to the overlay parent margin
+      // see https://github.com/nccgroup/image-checker/issues/41
+      if (imagesInfoParent.style.position === 'relative') {
+        position.top -= imagesInfoParent.margin.top;
+        position.left -= imagesInfoParent.margin.left;
+      }
+
       return {
         url: getUrl(element),
         size: size,
-        position: getElementTopLeft(element),
+        position: position,
         height: element.offsetHeight,
         width: element.offsetWidth,
         naturalSize: getNaturalSize(element)
@@ -278,6 +291,30 @@
       location.left = window.scrollX + boundingClientRect.left;
     }
     return location;
+  }
+
+  function getImagesInfoParentElement() {
+    return document.getElementsByTagName('body')[0];
+  }
+
+  function getImagesInfoParent() {
+    let parentElement = getImagesInfoParentElement();
+    let style = getComputedStyle(parentElement);
+    let boundingClientRect = parentElement.getBoundingClientRect();
+    let position = {
+      top: boundingClientRect.top,
+      left: boundingClientRect.left
+    };
+    let margin = {
+      top: boundingClientRect.top + window.scrollY,
+      left: boundingClientRect.left + window.scrollX
+    };
+
+    return {
+      position: position,
+      margin: margin,
+      style: style
+    };
   }
 
   function getNaturalSize(element) {
@@ -366,6 +403,7 @@
     _getImageCoverage: getImageCoverage,
     _getElementTopLeft: getElementTopLeft,
     _getAvailableImages: getAvailableImages,
-    _getBackgroundColor: getBackgroundColor
+    _getBackgroundColor: getBackgroundColor,
+    _getImagesInfoParent: getImagesInfoParent
   };
 }());
