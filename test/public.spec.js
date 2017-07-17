@@ -41,6 +41,8 @@ describe('imageChecker', () => {
   });
 
   beforeEach((done) => {
+    window.document.body.style.margin = '0px';
+
     images = document.createElement('div');
     images.id = 'images';
     window.document.body.append(images);
@@ -56,7 +58,7 @@ describe('imageChecker', () => {
 
   afterEach(() => {
     // cleanup
-    document.body.style = '';
+    window.document.body.style = null;
 
     images = window.document.getElementById('images');
     if (images) {
@@ -319,6 +321,44 @@ describe('imageChecker', () => {
         expect(getImageOverlays().length).toEqual(0);
       });
     });
+
+    describe('relative body with margins', () => {
+      let div;
+
+      beforeEach(() => {
+        createDomNodes([
+          createImg()
+        ]);
+        window.document.body.style.margin = '2px';
+        div = document.createElement('div');
+        div.style.margin = '4px';
+
+        window.document.body.prepend(div);
+      });
+
+      afterEach(() => {
+        window.document.body.style.margin = null;
+        window.document.body.removeChild(div);
+      });
+
+      it('should subtract margins when position relative', () => {
+        window.document.body.style.position = 'relative';
+
+        window.NCC.imageChecker.showImagesInfo();
+        let imageOverlay = getImageOverlay(0);
+
+        expect(imageOverlay.style.top).toEqual('0px');
+        expect(imageOverlay.style.left).toEqual('0px');
+      });
+
+      it('should not subtract margins when position is not relative', () => {
+        window.NCC.imageChecker.showImagesInfo();
+        let imageOverlay = getImageOverlay(0);
+
+        expect(imageOverlay.style.top).toEqual('4px');
+        expect(imageOverlay.style.left).toEqual('2px');
+      });
+    });
   });
 
   describe('hideImagesInfo()', () => {
@@ -382,19 +422,21 @@ describe('imageChecker', () => {
       createDomNodes([
         createImg()
       ]);
-      document.body.style = 'margin: 4px;';
+      window.document.body.style.margin = '4px';
 
       expect(window.NCC.imageChecker._getElementTopLeft(img)).toEqual({
         top: 4,
         left: 4
       });
+
+      window.document.body.style.margin = null;
     });
 
     it('should use parent offset as fallback', () => {
       createDomNodes([
         createBackgroundImg()
       ]);
-      document.body.style = 'margin: 2px;';
+      window.document.body.style.margin = '2px';
 
       expect(window.NCC.imageChecker._getElementTopLeft(backgroundImg)).toEqual({
         top: 2,
@@ -455,6 +497,26 @@ describe('imageChecker', () => {
 
     it('should return low coverage color for negative percentage', () => {
       expect(window.NCC.imageChecker._getBackgroundColor(-1)).toEqual('hsla(240, 100%, 50%, .8)');
+    });
+  });
+
+  describe('_getImagesInfoParent', () => {
+    it('should return correct values for body', () => {
+      window.document.body.style.margin = '10px';
+
+      expect(window.NCC.imageChecker._getImagesInfoParent()).toEqual({
+        position: {
+          top: 10,
+          left: 10
+        },
+        margin: {
+          top: 10,
+          left: 10
+        },
+        style: jasmine.objectContaining({position: jasmine.any(String)})
+      });
+
+      window.document.body.style.margin = null;
     });
   });
 
