@@ -508,12 +508,7 @@ describe('imageChecker', () => {
         position: {
           top: 10,
           left: 10
-        },
-        margin: {
-          top: 10,
-          left: 10
-        },
-        style: jasmine.objectContaining({position: jasmine.any(String)})
+        }
       });
 
       window.document.body.style.margin = null;

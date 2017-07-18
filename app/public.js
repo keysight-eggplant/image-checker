@@ -226,10 +226,8 @@
 
       // adjust position according to the overlay parent margin
       // see https://github.com/nccgroup/image-checker/issues/41
-      if (imagesInfoParent.style.position === 'relative') {
-        position.top -= imagesInfoParent.margin.top;
-        position.left -= imagesInfoParent.margin.left;
-      }
+      position.top -= imagesInfoParent.position.top;
+      position.left -= imagesInfoParent.position.left;
 
       return {
         url: getUrl(element),
@@ -299,22 +297,13 @@
 
   function getImagesInfoParent() {
     let parentElement = getImagesInfoParentElement();
-    let style = getComputedStyle(parentElement);
     let boundingClientRect = parentElement.getBoundingClientRect();
     let position = {
-      top: boundingClientRect.top,
-      left: boundingClientRect.left
-    };
-    let margin = {
-      top: boundingClientRect.top + window.scrollY,
-      left: boundingClientRect.left + window.scrollX
+      top: window.scrollY + boundingClientRect.top,
+      left: window.scrollX + boundingClientRect.left
     };
 
-    return {
-      position: position,
-      margin: margin,
-      style: style
-    };
+    return {position: position};
   }
 
   function getNaturalSize(element) {
