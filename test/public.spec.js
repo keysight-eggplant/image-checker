@@ -30,6 +30,16 @@ describe('imageChecker', () => {
   let crossDomainImg;
   let svgImg;
 
+  beforeAll((done) => {
+    let stylesheet = document.createElement('link');
+    stylesheet.rel = 'stylesheet';
+    stylesheet.href = 'base/app/styles/content.css';
+    stylesheet.onload = function() {
+      done();
+    };
+    document.head.appendChild(stylesheet);
+  });
+
   beforeAll(() => {
     spyOn(window, 'setInterval');
     spyOn(window, 'clearInterval');
@@ -327,36 +337,33 @@ describe('imageChecker', () => {
 
       beforeEach(() => {
         createDomNodes([
-          createImg()
+          createBigImg()
         ]);
-        window.document.body.style.margin = '2px';
-        div = document.createElement('div');
-        div.style.margin = '4px';
+        window.document.body.style.marginTop = '10px';
+        window.document.body.style.marginLeft = '10px';
+        images.style.marginTop = '20px';
+        images.style.marginLeft = '20px';
 
-        window.document.body.prepend(div);
+        div = document.createElement('div');
+        div.style.width = '10px';
+        div.style.height = '10px';
+        div.style.display = 'block';
+
+        images.prepend(div);
       });
 
       afterEach(() => {
         window.document.body.style.margin = null;
-        window.document.body.removeChild(div);
       });
 
-      it('should subtract margins when position relative', () => {
+      it('should subtract parent position', () => {
         window.document.body.style.position = 'relative';
 
         window.NCC.imageChecker.showImagesInfo();
         let imageOverlay = getImageOverlay(0);
 
-        expect(imageOverlay.style.top).toEqual('0px');
-        expect(imageOverlay.style.left).toEqual('0px');
-      });
-
-      it('should not subtract margins when position is not relative', () => {
-        window.NCC.imageChecker.showImagesInfo();
-        let imageOverlay = getImageOverlay(0);
-
-        expect(imageOverlay.style.top).toEqual('4px');
-        expect(imageOverlay.style.left).toEqual('2px');
+        expect(imageOverlay.style.top).toEqual('10px');
+        expect(imageOverlay.style.left).toEqual('20px');
       });
     });
   });
