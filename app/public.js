@@ -263,6 +263,10 @@
       return true;
     }
 
+    if (element.tagName.toLowerCase() === 'video' && element.poster) {
+      return true;
+    }
+
     if (style.backgroundImage) {
       let urlMatcher = BACKGROUND_IMAGE_URL_REGEX.exec(style.backgroundImage);
 
@@ -337,8 +341,11 @@
     }
   }
 
+  // video has currentSrc which points to the video file so we need to ignore it
   function getUrl(element) {
-    if (element.currentSrc) {
+    if (element.tagName.toLowerCase() === 'video') {
+      return element.poster;
+    } else if (element.currentSrc) {
       return element.currentSrc;
     } else if (element.src) {
       return element.src;
