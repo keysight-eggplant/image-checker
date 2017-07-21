@@ -524,12 +524,10 @@ describe('imageChecker', () => {
     it('should return correct values for body', () => {
       window.document.body.style.margin = '10px';
 
-      expect(window.NCC.imageChecker._getImagesInfoParent()).toEqual({
-        position: {
-          top: 10,
-          left: 10
-        }
-      });
+      expect(window.NCC.imageChecker._getImagesInfoParent()).toEqual({position: {
+        top: 10,
+        left: 10
+      }});
 
       window.document.body.style.margin = null;
     });
