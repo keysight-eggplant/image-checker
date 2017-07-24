@@ -1,6 +1,6 @@
 {
   "name": "image-checker",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Provides image optimisation information within the browser.",
   "repository": {
     "type": "git",
