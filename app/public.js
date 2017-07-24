@@ -218,7 +218,7 @@
   function getImages(domNodes) {
     let images = getAvailableImages(domNodes);
 
-    let imagesInfoParent = getImagesInfoParent();
+    let parentPosition = getElementTopLeft(getImagesInfoParentElement());
 
     return images.map(element => {
       let size = getSize(element);
@@ -230,8 +230,8 @@
 
       // adjust position according to the overlay parent margin
       // see https://github.com/nccgroup/image-checker/issues/41
-      position.top -= imagesInfoParent.position.top;
-      position.left -= imagesInfoParent.position.left;
+      position.top -= parentPosition.top;
+      position.left -= parentPosition.left;
 
       return {
         url: getUrl(element),
@@ -291,27 +291,14 @@
       top: 0,
       left: 0
     };
-    if (elem.getBoundingClientRect) {
-      let boundingClientRect = elem.getBoundingClientRect();
-      location.top = window.scrollY + boundingClientRect.top;
-      location.left = window.scrollX + boundingClientRect.left;
-    }
+    let boundingClientRect = elem.getBoundingClientRect();
+    location.top = window.scrollY + boundingClientRect.top;
+    location.left = window.scrollX + boundingClientRect.left;
     return location;
   }
 
   function getImagesInfoParentElement() {
     return document.getElementsByTagName('body')[0];
-  }
-
-  function getImagesInfoParent() {
-    let parentElement = getImagesInfoParentElement();
-    let boundingClientRect = parentElement.getBoundingClientRect();
-    let position = {
-      top: window.scrollY + boundingClientRect.top,
-      left: window.scrollX + boundingClientRect.left
-    };
-
-    return {position: position};
   }
 
   function getNaturalSize(element) {
@@ -404,7 +391,6 @@
     _getImageScale: getImageScale,
     _getElementTopLeft: getElementTopLeft,
     _getAvailableImages: getAvailableImages,
-    _getBackgroundColor: getBackgroundColor,
-    _getImagesInfoParent: getImagesInfoParent
+    _getBackgroundColor: getBackgroundColor
   };
 }());

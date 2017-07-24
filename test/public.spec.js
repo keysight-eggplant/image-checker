@@ -572,19 +572,6 @@ describe('imageChecker', () => {
     });
   });
 
-  describe('_getImagesInfoParent', () => {
-    it('should return correct values for body', () => {
-      window.document.body.style.margin = '10px';
-
-      expect(window.NCC.imageChecker._getImagesInfoParent()).toEqual({position: {
-        top: 10,
-        left: 10
-      }});
-
-      window.document.body.style.margin = null;
-    });
-  });
-
   function createBackgroundImg() {
     backgroundImg = document.createElement('div');
     backgroundImg.style = 'display: block;width: 200px;height: 160px;' +
