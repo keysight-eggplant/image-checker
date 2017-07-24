@@ -150,6 +150,10 @@
     optimalP.innerHTML = `Image coverage: ${scale}x`;
     div.appendChild(optimalP);
 
+    let dprP = document.createElement('p');
+    dprP.innerHTML = `Device pixel ratio: ${window.devicePixelRatio}`;
+    div.appendChild(dprP);
+
     if (image.size) {
       let sizeP = document.createElement('p');
       sizeP.innerHTML = image.size > 0 ? `File Size: ${image.size} KB` : 'File size unavailable';
@@ -200,13 +204,13 @@
 
   function getImageCoverage(image) {
     let naturalArea = image.naturalSize.width * image.naturalSize.height;
-    let renderArea = image.width * image.height;
+    let renderArea = window.devicePixelRatio * window.devicePixelRatio * image.width * image.height;
     return (100 * (naturalArea / renderArea));
   }
 
   function getImageScale(image) {
-    let widthRatio = image.naturalSize.width / image.width;
-    let heightRatio = image.naturalSize.height / image.height;
+    let widthRatio = image.naturalSize.width / (window.devicePixelRatio * image.width);
+    let heightRatio = image.naturalSize.height / (window.devicePixelRatio * image.height);
     return Math.max(widthRatio, heightRatio);
   }
 
@@ -397,6 +401,7 @@
     _getSize: getSize,
     _getNaturalSize: getNaturalSize,
     _getImageCoverage: getImageCoverage,
+    _getImageScale: getImageScale,
     _getElementTopLeft: getElementTopLeft,
     _getAvailableImages: getAvailableImages,
     _getBackgroundColor: getBackgroundColor,

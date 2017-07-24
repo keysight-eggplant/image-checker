@@ -39,20 +39,16 @@ describe('imageChecker', () => {
       done();
     };
     document.head.appendChild(stylesheet);
-  });
 
-  beforeAll(() => {
     spyOn(window, 'setInterval');
     spyOn(window, 'clearInterval');
   });
 
-  beforeEach(() => {
-    window.setInterval.calls.reset();
-    window.clearInterval.calls.reset();
-  });
-
   beforeEach((done) => {
     window.document.body.style.margin = '0px';
+
+    window.setInterval.calls.reset();
+    window.clearInterval.calls.reset();
 
     images = document.createElement('div');
     images.id = 'images';
@@ -65,6 +61,9 @@ describe('imageChecker', () => {
       done();
     };
     window.document.body.appendChild(preloaded);
+
+    // set devicePixelRatio to 1 as Chrome defaults to 1.25 in certain scenarios
+    window.devicePixelRatio = 1;
   });
 
   afterEach(() => {
@@ -80,6 +79,9 @@ describe('imageChecker', () => {
     overlays.forEach((overlay) => {
       overlay.parentElement.removeChild(overlay);
     });
+
+    // reset devicePixelRatio back to 1 just in case tests have changed it
+    window.devicePixelRatio = 1;
   });
 
   it('should expose public api', () => {
@@ -475,6 +477,56 @@ describe('imageChecker', () => {
         width: 100,
         height: 100
       })).toEqual(400);
+    });
+
+    it('should account for device pixel ratio', () => {
+      window.devicePixelRatio = 2;
+
+      expect(window.NCC.imageChecker._getImageCoverage({
+        naturalSize: {
+          width: 200,
+          height: 200
+        },
+        width: 100,
+        height: 100
+      })).toEqual(100);
+    });
+  });
+
+  describe('_getImageScale', () => {
+    it('should return scale when height is bigger', () => {
+      expect(window.NCC.imageChecker._getImageScale({
+        naturalSize: {
+          width: 100,
+          height: 200
+        },
+        width: 100,
+        height: 100
+      })).toEqual(2);
+    });
+
+    it('should return scale when width is bigger', () => {
+      expect(window.NCC.imageChecker._getImageScale({
+        naturalSize: {
+          width: 200,
+          height: 100
+        },
+        width: 100,
+        height: 100
+      })).toEqual(2);
+    });
+
+    it('should account for device pixel ratio', () => {
+      window.devicePixelRatio = 2;
+
+      expect(window.NCC.imageChecker._getImageScale({
+        naturalSize: {
+          width: 200,
+          height: 100
+        },
+        width: 100,
+        height: 100
+      })).toEqual(1);
     });
   });
 
