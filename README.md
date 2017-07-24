@@ -15,9 +15,8 @@ or
 3. Select the directory where you have cloned this repo
 
 ## Current limitations
-1. the overlays are not responsive
-2. overlay of background images where the element is positioned with negative values or via tranform will display as if the values were positive; why? the javascript api returns absolute values
-3. overlay of carousel images will display for covered images as well
-4. overlapping overlays hide each other
-5. file size for some cross origin images is not available (depends of support of performanceEntry)
-6. sprites are not bad practice ... yet this tool flags them red, we don't handle them at all
+1. overlay of background images where the element is positioned with negative values or via tranform will display as if the values were positive; why? the javascript api returns absolute values
+2. overlay of carousel images will display for covered images as well
+3. overlapping overlays hide each other
+4. file size for some cross origin images is not available (depends of support of performanceEntry)
+5. sprites are not bad practice ... yet this tool flags them red, we don't handle them at all
