@@ -31,9 +31,24 @@ describe('imageChecker', () => {
   let svgImg;
   let video;
 
-  beforeEach((done) => {
+  beforeAll((done) => {
+    let stylesheet = document.createElement('link');
+    stylesheet.rel = 'stylesheet';
+    stylesheet.href = 'base/app/styles/content.css';
+    stylesheet.onload = function() {
+      done();
+    };
+    document.head.appendChild(stylesheet);
+
     spyOn(window, 'setInterval');
     spyOn(window, 'clearInterval');
+  });
+
+  beforeEach((done) => {
+    window.document.body.style.margin = '0px';
+
+    window.setInterval.calls.reset();
+    window.clearInterval.calls.reset();
 
     images = document.createElement('div');
     images.id = 'images';
@@ -53,15 +68,14 @@ describe('imageChecker', () => {
 
   afterEach(() => {
     // cleanup
-    document.body.style = '';
+    window.document.body.style = null;
 
     images = window.document.getElementById('images');
     if (images) {
       images.parentElement.removeChild(images);
     }
 
-    let overlays = document.querySelectorAll('.ncc-image-checker-overlay');
-    overlays = [].slice.call(overlays);
+    let overlays = [].slice.call(getImageOverlays());
     overlays.forEach((overlay) => {
       overlay.parentElement.removeChild(overlay);
     });
@@ -112,32 +126,46 @@ describe('imageChecker', () => {
       expect(imageOverlays.length).toEqual(0);
     });
 
-    it('should ignore query parameters', () => {
+    it('should ignore query parameters', (done) => {
       createDomNodes([
         createBigImg({queryParams: 'mock=true'})
       ]);
-      window.NCC.imageChecker.showImagesInfo();
 
-      let textLines = getImageOverlayTextLines(0);
+      bigImg.addEventListener('load', () => {
+        window.NCC.imageChecker.showImagesInfo();
 
-      expect(textLines).not.toContain(jasmine.stringMatching(/\?mock=true/));
+        let textLines = getImageOverlayTextLines(0);
+
+        expect(textLines).toContain('placeholder-100x80.png');
+        expect(textLines).not.toContain(jasmine.stringMatching(/placeholder-100x80.png\?mock=true/));
+
+        done();
+      }, false);
     });
 
     describe('refreshImages', () => {
       let mockIntervalId;
+      let intervalFn;
       beforeEach(() => {
         createDomNodes([
           createImg()
         ]);
-        window.setInterval.calls.reset();
-        window.clearInterval.calls.reset();
         mockIntervalId = /mockIntervalId/;
         window.setInterval.and.returnValue(mockIntervalId);
         window.NCC.imageChecker.showImagesInfo();
+        intervalFn = window.setInterval.calls.mostRecent().args[0];
+      });
+
+      it('should not refresh any images if nothing significant changes', () => {
+        expect(getImageOverlays().length).toEqual(1);
+
+        intervalFn();
+
+        expect(getImageOverlays().length).toEqual(1);
       });
 
       it('should refresh images if the window height changes', () => {
-        let intervalFn = window.setInterval.calls.mostRecent().args[0];
+        expect(getImageOverlays().length).toEqual(1);
         createDomNodes([
           createImg()
         ]);
@@ -145,12 +173,11 @@ describe('imageChecker', () => {
 
         intervalFn();
 
-        let imageOverlays = document.querySelectorAll('.ncc-image-checker-overlay');
-        expect(imageOverlays.length).toEqual(2);
+        expect(getImageOverlays().length).toEqual(2);
       });
 
       it('should refresh images if the window width changes', () => {
-        let intervalFn = window.setInterval.calls.mostRecent().args[0];
+        expect(getImageOverlays().length).toEqual(1);
         createDomNodes([
           createImg()
         ]);
@@ -158,8 +185,37 @@ describe('imageChecker', () => {
 
         intervalFn();
 
-        let imageOverlays = document.querySelectorAll('.ncc-image-checker-overlay');
-        expect(imageOverlays.length).toEqual(2);
+        expect(getImageOverlays().length).toEqual(2);
+      });
+
+      it('should refresh images if the window scrollX changes', () => {
+        expect(getImageOverlays().length).toEqual(1);
+        createDomNodes([
+          createImg()
+        ]);
+        window.scrollX += 1;
+
+        intervalFn();
+
+        expect(getImageOverlays().length).toEqual(2);
+
+        // revert
+        window.scrollX -= 1;
+      });
+
+      it('should refresh images if the window scrollY changes', () => {
+        expect(getImageOverlays().length).toEqual(1);
+        createDomNodes([
+          createImg()
+        ]);
+        window.scrollY += 1;
+
+        intervalFn();
+
+        expect(getImageOverlays().length).toEqual(2);
+
+        // revert
+        window.scrollY -= 1;
       });
 
       it('should create an interval of 500ms', () => {
@@ -184,9 +240,9 @@ describe('imageChecker', () => {
         let textLines = getImageOverlayTextLines(0);
 
         expect(textLines).toContain(jasmine.stringMatching('...holder-100x80.png'));
-        expect(textLines).toContain('Display: 200 x 160');
+        expect(textLines).toContain('Display: 300 x 240');
         expect(textLines).toContain('Natural: 100 x 80');
-        expect(textLines).toContain('Image coverage: 0.5x');
+        expect(textLines).toContain('Image coverage: 0.3x');
         expect(textLines).toContain('File Size: 4.464 KB');
       });
 
@@ -290,6 +346,41 @@ describe('imageChecker', () => {
         expect(getImageOverlays().length).toEqual(0);
       });
     });
+
+    describe('relative body with margins', () => {
+      let div;
+
+      beforeEach(() => {
+        createDomNodes([
+          createBigImg()
+        ]);
+        window.document.body.style.marginTop = '10px';
+        window.document.body.style.marginLeft = '10px';
+        images.style.marginTop = '20px';
+        images.style.marginLeft = '20px';
+
+        div = document.createElement('div');
+        div.style.width = '10px';
+        div.style.height = '10px';
+        div.style.display = 'block';
+
+        images.prepend(div);
+      });
+
+      afterEach(() => {
+        window.document.body.style.margin = null;
+      });
+
+      it('should subtract parent position', () => {
+        window.document.body.style.position = 'relative';
+
+        window.NCC.imageChecker.showImagesInfo();
+        let imageOverlay = getImageOverlay(0);
+
+        expect(imageOverlay.style.top).toEqual('10px');
+        expect(imageOverlay.style.left).toEqual('20px');
+      });
+    });
   });
 
   describe('hideImagesInfo()', () => {
@@ -353,18 +444,26 @@ describe('imageChecker', () => {
       createDomNodes([
         createImg()
       ]);
-      document.body.style = 'margin: 4px;';
+      window.document.body.style.margin = '4px';
 
-      expect(window.NCC.imageChecker._getElementTopLeft(img)).toEqual({top: 4, left: 4});
+      expect(window.NCC.imageChecker._getElementTopLeft(img)).toEqual({
+        top: 4,
+        left: 4
+      });
+
+      window.document.body.style.margin = null;
     });
 
     it('should use parent offset as fallback', () => {
       createDomNodes([
         createBackgroundImg()
       ]);
-      document.body.style = 'margin: 2px;';
+      window.document.body.style.margin = '2px';
 
-      expect(window.NCC.imageChecker._getElementTopLeft(backgroundImg)).toEqual({top: 2, left: 2});
+      expect(window.NCC.imageChecker._getElementTopLeft(backgroundImg)).toEqual({
+        top: 2,
+        left: 2
+      });
     });
   });
 
@@ -437,7 +536,10 @@ describe('imageChecker', () => {
         createImg()
       ]);
 
-      expect(window.NCC.imageChecker._getNaturalSize(img)).toEqual({width: 100, height: 80});
+      expect(window.NCC.imageChecker._getNaturalSize(img)).toEqual({
+        width: 100,
+        height: 80
+      });
     });
 
     it('should use image natural size as fallback', () => {
@@ -531,11 +633,12 @@ describe('imageChecker', () => {
   function createBigImg(options) {
     options = options || {};
     bigImg = document.createElement('img');
-    bigImg.src = 'base/test/assets/placeholder-100x80.png';
+    let src = 'base/test/assets/placeholder-100x80.png';
     if (options.queryParams) {
-      bigImg.src += `?${options.queryParams}`;
+      src += `?${options.queryParams}`;
     }
-    bigImg.style = 'display: block;width: 200px;height: 160px;';
+    bigImg.src = src;
+    bigImg.style = 'display: block;width: 300px;height: 240px;';
     return bigImg;
   }
 

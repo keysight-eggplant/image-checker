@@ -35,7 +35,14 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'app/public.js',
-      {pattern: 'test/assets/**/*', included: false},
+      {
+        pattern: 'app/styles/**/*',
+        included: false
+      },
+      {
+        pattern: 'test/assets/**/*',
+        included: false
+      },
       'test/**/*.spec.js'
     ],
 
@@ -44,9 +51,7 @@ module.exports = function(config) {
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
-    preprocessors: {
-      'app/public.js': 'coverage'
-    },
+    preprocessors: {'app/public.js': 'coverage'},
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
@@ -54,14 +59,12 @@ module.exports = function(config) {
     reporters: ['progress', 'coverage'],
 
     coverageReporter: {
-      check: {
-        global: {
-          statements: 80,
-          branches: 80,
-          functions: 80,
-          lines: 80
-        }
-      },
+      check: {global: {
+        statements: 80,
+        branches: 80,
+        functions: 80,
+        lines: 80
+      }},
       watermarks: {
         statements: [80, 90],
         functions: [80, 90],

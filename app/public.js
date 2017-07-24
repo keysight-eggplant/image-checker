@@ -32,7 +32,7 @@
   function showImagesInfo(images) {
     images = images || document.getElementsByTagName('*');
     images = nodeListToArray(images);
-    let body = document.getElementsByTagName('body')[0];
+    let imagesInfoParentElement = getImagesInfoParentElement();
     getImages(images).forEach(image => {
       const MIN_IMAGE_CONTENT_WIDTH = 150;
       const MIN_IMAGE_CONTENT_HEIGHT = 70;
@@ -54,7 +54,7 @@
             div.appendChild(url);
             styleElement(div, image);
             appendInfoToElement(div, image);
-            body.appendChild(div);
+            imagesInfoParentElement.appendChild(div);
           } else {
             appendInfoToElement(div, image);
             appendAnchorToBody(div, image);
@@ -90,6 +90,8 @@
     let width = window.innerWidth;
     let height = window.innerHeight;
     let href = window.location.href;
+    let scrollX = window.scrollX;
+    let scrollY = window.scrollY;
     let update;
 
     clearInterval(refreshImagesInterval);
@@ -104,6 +106,11 @@
         update = true;
         width = window.innerWidth;
         height = window.innerHeight;
+      }
+      if (window.scrollX !== scrollX || window.scrollY !== scrollY) {
+        update = true;
+        scrollX = window.scrollX;
+        scrollY = window.scrollY;
       }
       if (update) {
         refreshImagesInfo();
@@ -171,7 +178,7 @@
     anchor.setAttribute('target', '_blank');
     anchor.setAttribute('title', title);
     anchor.appendChild(element);
-    document.getElementsByTagName('body')[0].appendChild(anchor);
+    getImagesInfoParentElement().appendChild(anchor);
   }
 
   function styleElement(element, image) {
@@ -210,15 +217,26 @@
   // this is the last point element is a DOM element
   function getImages(domNodes) {
     let images = getAvailableImages(domNodes);
+
+    let parentPosition = getElementTopLeft(getImagesInfoParentElement());
+
     return images.map(element => {
       let size = getSize(element);
       if (typeof size === 'number') {
         size = (size / 1024).toFixed(3);
       }
+
+      let position = getElementTopLeft(element);
+
+      // adjust position according to the overlay parent margin
+      // see https://github.com/nccgroup/image-checker/issues/41
+      position.top -= parentPosition.top;
+      position.left -= parentPosition.left;
+
       return {
         url: getUrl(element),
         size: size,
-        position: getElementTopLeft(element),
+        position: position,
         height: element.offsetHeight,
         width: element.offsetWidth,
         naturalSize: getNaturalSize(element)
@@ -273,17 +291,14 @@
       top: 0,
       left: 0
     };
-    if (elem.x && elem.y) {
-      location.top = elem.y;
-      location.left = elem.x;
-    } else if (elem.offsetParent) {
-      do {
-        location.top += elem.offsetTop;
-        location.left += elem.offsetLeft;
-        elem = elem.offsetParent;
-      } while (elem);
-    }
+    let boundingClientRect = elem.getBoundingClientRect();
+    location.top = window.scrollY + boundingClientRect.top;
+    location.left = window.scrollX + boundingClientRect.left;
     return location;
+  }
+
+  function getImagesInfoParentElement() {
+    return document.getElementsByTagName('body')[0];
   }
 
   function getNaturalSize(element) {
