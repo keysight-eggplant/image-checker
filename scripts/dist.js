@@ -18,6 +18,7 @@
 let fs = require('fs');
 let yazl = require('yazl');
 let recursive = require('recursive-readdir');
+let childProcess = require('child_process');
 let manifestJson = require('../manifest.json');
 
 let rootFiles = [
@@ -25,6 +26,8 @@ let rootFiles = [
   'manifest.json',
   'README.md'
 ];
+
+let commitId = childProcess.execSync('git rev-parse --verify HEAD').toString().trim();
 
 recursive('app', (err, files) => {
   let zipFile = new yazl.ZipFile();
@@ -42,13 +45,13 @@ recursive('app', (err, files) => {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir);
   }
-  let outpoutPath = `${dir}/image-checker-${manifestJson.version}.zip`;
+  let outputPath = `${dir}/image-checker-${manifestJson.version}-${commitId}.zip`;
 
   zipFile.outputStream
-    .pipe(fs.createWriteStream(outpoutPath))
+    .pipe(fs.createWriteStream(outputPath))
     .on('close', () => {
       console.log('zip created');
-      console.log(' ', outpoutPath);
+      console.log(' ', outputPath);
     });
 
   zipFile.end();
